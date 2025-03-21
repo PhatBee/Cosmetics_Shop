@@ -6,6 +6,8 @@ Cosmetics Shop is a modern e-commerce platform built with cutting-edge technolog
 ## Installation and Setup 🚀
 
 To set up the **Cosmetics Shop** locally, follow these steps:
+### 🏆 Visiting online:
+Go to http://20.2.154.12:8081/
 
 
 ### 🏆 Running from JAR File (GitHub Release)
