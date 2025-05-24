@@ -9,6 +9,7 @@ import com.cosmeticsellingwebsite.payload.request.UpdateCartReq;
 import com.cosmeticsellingwebsite.service.impl.CartService;
 import com.cosmeticsellingwebsite.service.impl.ProductService;
 import com.cosmeticsellingwebsite.util.Logger;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class CartController {
 
 
     @PostMapping("/add-to-cart")
-    public ResponseEntity<?> addProductToCart(@RequestBody AddProductToCartRequest addProductToCartRequest) {
+    public ResponseEntity<?> addProductToCart(@RequestBody @Valid AddProductToCartRequest addProductToCartRequest) {
         Long userId = authenticationHelper.getUserId();
         cartService.addToCart(userId, addProductToCartRequest);
         return ResponseEntity.ok("Added to cart");

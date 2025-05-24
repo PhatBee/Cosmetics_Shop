@@ -1,5 +1,6 @@
 package com.cosmeticsellingwebsite.service.impl;
 
+import com.cosmeticsellingwebsite.dto.CheckVoucherDTO;
 import com.cosmeticsellingwebsite.dto.VoucherDTO;
 import com.cosmeticsellingwebsite.entity.Voucher;
 import com.cosmeticsellingwebsite.exception.CustomException;
@@ -8,6 +9,7 @@ import com.cosmeticsellingwebsite.service.interfaces.IVoucherService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,8 +25,13 @@ public class VoucherService implements IVoucherService {
     @Autowired
     VoucherRepository voucherRepository;
 
-    public Voucher getVoucherByVoucherCode(String voucherCode) {
-        return voucherRepository.findFirstByVoucherCodeAndUsedFalseAndStartDateBeforeAndEndDateAfter(voucherCode, LocalDateTime.now(), LocalDateTime.now()).orElseThrow(() -> new CustomException("Voucher " + voucherCode + " is not available"));
+    public CheckVoucherDTO getVoucherByVoucherCode(String voucherCode) {
+        Voucher v =
+         voucherRepository.findFirstByVoucherCodeAndUsedFalseAndStartDateBeforeAndEndDateAfter(voucherCode, LocalDateTime.now(), LocalDateTime.now()).orElseThrow(() -> new CustomException("Voucher " + voucherCode + " is not available"));
+
+        CheckVoucherDTO voucherDTO = new CheckVoucherDTO();
+        BeanUtils.copyProperties(v, voucherDTO);
+        return voucherDTO;
     }
 
     @Override

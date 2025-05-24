@@ -1,5 +1,6 @@
 package com.cosmeticsellingwebsite.controller.customer;
 
+import com.cosmeticsellingwebsite.dto.CheckVoucherDTO;
 import com.cosmeticsellingwebsite.entity.Voucher;
 import com.cosmeticsellingwebsite.service.impl.VoucherService;
 import com.cosmeticsellingwebsite.service.interfaces.IVoucherService;
@@ -21,7 +22,7 @@ public class VoucherController {
     @GetMapping("")
     @ResponseBody
     public ResponseEntity<?> getVoucher(@RequestParam("voucherCode") String voucherCode) {
-        Voucher voucher = voucherService.getVoucherByVoucherCode(voucherCode);
+        CheckVoucherDTO voucher = voucherService.getVoucherByVoucherCode(voucherCode);
         return new ResponseEntity<>(voucher, HttpStatus.OK);
     }
 }
