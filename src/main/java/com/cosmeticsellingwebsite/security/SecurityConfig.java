@@ -25,6 +25,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -88,22 +90,32 @@ public class SecurityConfig {
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                // Sau đó sử dụng trong securityFilterChain (Spring Security 6.1+):
+                // Cấu hình Security Headers cải tiến
+                // Cấu hình Security Headers cải tiến (Spring Security 6.1+)
                 .headers(headers -> headers
-                        .contentSecurityPolicy(csp -> csp
-                                .policyDirectives("default-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
-                                        "script-src 'self' http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; " +
-                                        "script-src-elem 'self' https://www.gstatic.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; " +
-                                        "script-src-attr 'self' http://127.0.0.1:5500 http://localhost:8081; " +
-                                        "style-src 'self' http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
-                                        "img-src 'self' https://cdn.chanhtuoi.com/ https://scontent.fsgn5-9.fna.fbcdn.net http://127.0.0.1:5500 http://localhost:8081 http://localhost:8081/api/images https://via.placeholder.com https://www.facebook.com https://source.unsplash.com data:; " +
-                                        "connect-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
-                                        "font-src 'self' https://cdnjs.cloudflare.com http://127.0.0.1:5500 http://localhost:8081 https://fonts.gstatic.com; " +
-                                        "worker-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
-                                        "media-src 'self'  http://127.0.0.1:5500 http://localhost:8081; " +
-                                        "frame-src 'self' https://www.google.com/recaptcha/api2/; " +
-                                        "object-src 'none'")
+                        // Frame Options
+                        .frameOptions(frameOptions -> frameOptions.deny())
+                        // Content Type Options
+                        .contentTypeOptions(Customizer.withDefaults())
+                        // HSTS
+                        .httpStrictTransportSecurity(hstsConfig -> hstsConfig
+                                .maxAgeInSeconds(31536000)
+                                .includeSubDomains(true)
                         )
+                        // Referrer Policy (Spring Security 6.1+ syntax)
+                        .referrerPolicy(referrerPolicy -> referrerPolicy
+                                .policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+                        )
+                        // CSP cải tiến (Spring Security 6.1+ syntax)
+                        .contentSecurityPolicy(cspConfig -> cspConfig
+                                .policyDirectives(buildImprovedContentSecurityPolicy())
+                        )
+                        // Custom headers cho Permissions Policy
+                        .addHeaderWriter(new StaticHeadersWriter("Permissions-Policy",
+                                "camera=(), microphone=(), geolocation=(self)"))
                 )
+//
                 .authorizeHttpRequests(auth -> auth
 //                        STATIC_RESOURCES
                         .requestMatchers("/assets/**", "/showMsg.js", "/notification.js", "/error", "/error/**", " /login").permitAll()
@@ -171,6 +183,45 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    private String buildImprovedContentSecurityPolicy() {
+        return  "default-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
+                // Scripts - cho phép inline và eval cho các trang dynamic
+                "script-src 'self' https://www.gstatic.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; " +
+                // Styles - bao gồm Google Fonts và FontAwesome
+                "style-src 'self' https://use.fontawesome.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
+                // Fonts - bao gồm local fonts và Google Fonts
+                "font-src 'self' https://fonts.googleapis.com/ https://use.fontawesome.com https://cdnjs.cloudflare.com http://127.0.0.1:5500 http://localhost:8081 https://fonts.gstatic.com data:; " +
+                // Images - cho phép tất cả HTTPS và data URLs
+                "img-src 'self' https://cdn.chanhtuoi.com/ https://scontent.fsgn5-9.fna.fbcdn.net http://127.0.0.1:5500 http://localhost:8081 http://localhost:8081/api/images https://via.placeholder.com https://www.facebook.com https://source.unsplash.com data:; " +
+                // AJAX connections
+                "connect-src 'self' http://127.0.0.1:5500 http://localhost:8081 https://www.google.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
+                // Media files (video, audio)
+                "media-src 'self' http://127.0.0.1:5500 http://localhost:8081 data:; " +
+                // Child contexts (frames, workers)
+                "child-src 'self'; " +
+                // Web Workers
+                "worker-src 'self' http://127.0.0.1:5500 http://localhost:8081 blob:; " +
+                // Forms - chỉ cho phép submit đến cùng origin
+                "form-action 'self'; " +
+                // Frames - google
+                "frame-src 'self' https://www.google.com/recaptcha/api2/; " +
+                // Frame ancestors - THÊM DIRECTIVE NÀY ĐỂ KHẮC PHỤC LỖ HỔNG
+                "frame-ancestors 'self'; " +
+                // Objects/Plugins - không cho phép
+                "object-src 'none'; " +
+                // Base URI
+                "base-uri 'self'; " +
+                // Manifest files
+                "manifest-src 'self'; " +
+                // Prefetch/DNS
+//                "prefetch-src 'self' " +
+                // Script-src-elem
+                "script-src-elem 'self' https://www.gstatic.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; "
+                ;
+
+//
     }
 
 
