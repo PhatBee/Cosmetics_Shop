@@ -88,6 +88,22 @@ public class SecurityConfig {
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+                .headers(headers -> headers
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives("default-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
+                                        "script-src 'self' http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; " +
+                                        "script-src-elem 'self' https://www.gstatic.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; " +
+                                        "script-src-attr 'self' http://127.0.0.1:5500 http://localhost:8081; " +
+                                        "style-src 'self' http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; " +
+                                        "img-src 'self' https://cdn.chanhtuoi.com/ https://scontent.fsgn5-9.fna.fbcdn.net http://127.0.0.1:5500 http://localhost:8081 http://localhost:8081/api/images https://via.placeholder.com https://www.facebook.com https://source.unsplash.com data:; " +
+                                        "connect-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
+                                        "font-src 'self' https://cdnjs.cloudflare.com http://127.0.0.1:5500 http://localhost:8081 https://fonts.gstatic.com; " +
+                                        "worker-src 'self' http://127.0.0.1:5500 http://localhost:8081; " +
+                                        "media-src 'self'  http://127.0.0.1:5500 http://localhost:8081; " +
+                                        "frame-src 'self' https://www.google.com/recaptcha/api2/; " +
+                                        "object-src 'none'")
+                        )
+                )
                 .authorizeHttpRequests(auth -> auth
 //                        STATIC_RESOURCES
                         .requestMatchers("/assets/**", "/showMsg.js", "/notification.js", "/error", "/error/**", " /login").permitAll()

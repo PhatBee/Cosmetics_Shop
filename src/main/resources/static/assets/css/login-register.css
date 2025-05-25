@@ -1,0 +1,84 @@
+.g-recaptcha {
+    transform: scale(1.5); /* Tăng kích thước lên 1.5 lần */
+    transform-origin: 0 0; /* Đặt góc trái trên làm điểm gốc */
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+}
+
+.form-section {
+    width: 45%;
+}
+.google-btn {
+    color: white;
+    cursor: pointer;
+    padding: 12px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.google-btn:hover {
+    transform: scale(1.05);
+}
+
+.google-btn .fab.fa-google {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+#captchaError {
+    display: none;
+}
+
+.form-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}

@@ -10,114 +10,9 @@
     <!--    <link rel="stylesheet" href="/assets/css/responsive.css">-->
     <link href="https://fonts.googleapis.com/css2?family=Comforter+Brush&family=Estonia&family=Kaushan+Script&family=Marck+Script&family=Nothing+You+Could+Do&family=Patrick+Hand&family=Roboto&family=Satisfy&family=Sawarabi+Gothic&family=Tangerine:wght@700&display=swap" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* ... other styles ... */
-
-        .rating .star {
-            display: inline-block;
-            color: #ccc; /* Default star color (gray) */
-        }
-
-        .rating .star.gold .fa-star{
-            color: gold; /* Gold color for filled stars */
-        }
-        .rating .avg-rating {
-            margin-left: 5px; /* Space between stars and average rating */
-        }
-        .numsold{
-            color: #c81616;
-            font-weight: bold;
-        }
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .navbar-brand {
-            font-weight: bold;
-            color: #e83e8c;
-        }
-        .nav-link {
-            color: #333;
-        }
-        .hero {
-            background-image: url('https://via.placeholder.com/1920x600');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 100px 0;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .section-title {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #e83e8c;
-        }
-        .product-slider {
-            position: relative;
-            overflow: hidden;
-            width: calc(250px * 5 + 20px * 5); /* Đảm bảo đúng 5 item (250px width + 20px margin) */
-            margin: auto;
-        }
-
-        .product-container {
-            display: flex;
-            transition: transform 0.5s ease;
-        }
-
-        .product-card {
-            flex: 0 0 auto;
-            width: 250px; /* Đảm bảo width cố định */
-            margin-right: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .product-image {
-            width: 100%;
-            height: 270px;
-            object-fit: cover;
-        }
-        .product-info {
-            padding: 15px;
-        }
-        .product-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .product-price {
-            color: #e83e8c;
-            font-weight: bold;
-        }
-        .slider-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(255,255,255,0.7);
-            border: none;
-            font-size: 24px;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .slider-button.prev {
-            left: 10px;
-        }
-        .slider-button.next {
-            right: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/bootstrap/bootstrap-5.1.3-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
 <body>
@@ -144,22 +39,22 @@
         <section class="mb-5">
             <h2 class="section-title">Top Bán Chạy</h2>
             <div class="product-slider" id="bestSellersSlider">
-                <button class="slider-button prev" onclick="slide('bestSellersSlider', -1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-button prev" data-slider="bestSellersSlider" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                 <div class="product-container">
-
+                    <!-- Thymeleaf content will be injected by renderBestSellers() -->
                 </div>
-                <button class="slider-button next" onclick="slide('bestSellersSlider', 1)"><i class="fas fa-chevron-right"></i></button>
+                <button class="slider-button next" data-slider="bestSellersSlider" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
 
         <section>
             <h2 class="section-title">Sản Phẩm Mới</h2>
             <div class="product-slider" id="newArrivalsSlider">
-                <button class="slider-button prev" onclick="slide('newArrivalsSlider', -1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-button prev" data-slider="newArrivalsSlider" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                 <div class="product-container">
-
+                    <!-- Thymeleaf content will be injected by renderNewestProduct() -->
                 </div>
-                <button class="slider-button next" onclick="slide('newArrivalsSlider', 1)"><i class="fas fa-chevron-right"></i></button>
+                <button class="slider-button next" data-slider="newArrivalsSlider" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
 
@@ -169,12 +64,11 @@
             <br>
             <h2 class="section-title">Top Sản Phẩm Đánh Giá Cao Nhât</h2>
             <div class="product-slider" id="top20RatedProductsSlider">
-                <button class="slider-button prev" onclick="slide('top20RatedProductsSlider', -1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-button prev" data-slider="top20RatedProductsSlider" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                 <div class="product-container">
-                    <!-- Top 20 Rated Products -->
-
+                    <!-- Thymeleaf content will be injected by renderTopRating() -->
                 </div>
-                <button class="slider-button next" onclick="slide('top20RatedProductsSlider', 1)"><i class="fas fa-chevron-right"></i></button>
+                <button class="slider-button next" data-slider="top20RatedProductsSlider" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
     </main>
@@ -184,273 +78,11 @@
 </div>
 <!--    modal-->
 <!--<script src="/assets/js/showHide.js"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/assets/bootstrap/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
 <!--jquery-->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    function slide(sliderId, direction) {
-        const slider = document.getElementById(sliderId);
-        if (slider===bestSellersSlider){
-            renderBestSellers();
-        }
-        if (slider===newArrivalsSlider){
-            renderNewestProduct();
-        }
-        if (slider===top20RatedProductsSlider){
-            renderTopRating();
-        }
-        const container = slider.querySelector('.product-container');
-        const cardWidth = 270; // 250px width + 20px margin
-        const visibleCards = Math.floor(slider.offsetWidth / cardWidth);
-        const itemsToScroll = 5; // Số lượng item bạn muốn cuộn
+<script src="/assets/jquery/jquery-3.7.1.min.js"></script>
 
-        const scrollAmount = direction * cardWidth * visibleCards;
-
-        container.style.transition = 'transform 0.5s ease';
-        container.style.transform = `translateX(${-scrollAmount}px)`;
-
-        setTimeout(() => {
-            container.style.transition = 'none';
-
-            if (direction > 0) {
-                // Di chuyển 4 phần tử đầu tiên xuống cuối
-                for (let i = 0; i < itemsToScroll; i++) {
-                    container.appendChild(container.firstElementChild);
-                }
-            } else {
-                // Di chuyển 4 phần tử cuối lên đầu
-                for (let i = 0; i < itemsToScroll; i++) {
-                    container.prepend(container.lastElementChild);
-                }
-            }
-
-            container.style.transform = 'translateX(0)';
-
-            setTimeout(() => {
-                container.style.transition = 'transform 0.5s ease';
-            }, 50);
-        }, 500);
-    }
-
-    $(document).ready(function() {
-        $('.btn-custom.btn-lg').click(function(event) {
-            event.preventDefault(); // Prevent default link behavior
-
-            // Calculate target position (500px from the top)
-            var targetPosition = 500;
-
-            // Smooth scroll to the target position
-            $('html, body').animate({
-                scrollTop: targetPosition
-            }, 10); // Adjust animation duration as needed
-        });
-    });
-
-
-</script>
-<script>
-    let currentPage = {
-        bestSellers: 0,
-        newArrivals: 0,
-        topRated: 0
-    };
-    const size = 5;
-
-
-        // Send AJAX request to load data
-    function renderBestSellers() {
-        if (currentPage["bestSellers"] === 4) {
-            return;
-        }
-        $.ajax({
-            url: `/topSellingProducts`,
-            method: "GET",
-            data: {
-                page: currentPage["bestSellers"]++,
-                size: 5 // Adjust size if needed
-            },
-            success: function (data) {
-                // Update slider with new products
-                const sliderContainer = document.getElementById("bestSellersSlider").querySelector(".product-container");
-                data.forEach(product => {
-                    const productCard = `
-                <div class="product-card">
-                    <img src="/api/images?imageName=${product.image}" alt="${product.productId}" class="product-image">
-                    <div class="product-info">
-                        <a href="/browser/product/${product.productId}" class="product-title" style="
-                            color: #fd7e14;
-                            overflow: hidden;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            width: 100%;
-                            font-weight: bold;
-                        ">${product.productName}</a>
-                        <p class="product-price">Giá: ${new Intl.NumberFormat().format(product.cost)} đ</p>
-                        <p class="numsold">Đã mua trong 30 ngày: ${product.totalSoldLast30Days}</p>
-                        <button onclick="addToCart('${product.productCode}')" class="btn btn-custom add-to-cart" >Thêm vào giỏ hàng</button>
-                    </div>
-                </div>
-            `;
-                    sliderContainer.innerHTML += productCard;
-                });
-            },
-            error: function (err) {
-                console.error("Error loading products:", err);
-            }
-        });
-    }
-
-    function renderNewestProduct(){
-        if (currentPage["newArrivals"] === 4) {
-            return;
-        }
-        $.ajax({
-            url: `/topNewestProducts`,
-            method: "GET",
-            data: {
-                page: currentPage["newArrivals"]++,
-                size: 5 // Adjust size if needed
-            },
-            success: function (data) {
-                // Update slider with new products
-                const sliderContainer = document.getElementById("newArrivalsSlider").querySelector(".product-container");
-                data.forEach(product => {
-                    const productCard = `
-                <div class="product-card">
-                    <img src="/api/images?imageName=${product.image}" alt="${product.productId}" class="product-image">
-                    <div class="product-info">
-                        <a href="/browser/product/${product.productId}" class="product-title" style="
-                            color: #fd7e14;
-                            overflow: hidden;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            width: 100%;
-                            font-weight: bold;
-                        ">${product.productName}</a>
-                        <p class="product-price">Giá: ${new Intl.NumberFormat().format(product.cost)} đ</p>
-                        <button onclick="addToCart('${product.productCode}')" class="btn btn-custom add-to-cart" >Thêm vào giỏ hàng</button>
-                    </div>
-                </div>
-            `;
-                    sliderContainer.innerHTML += productCard;
-                });
-            },
-            error: function (err) {
-                console.error("Error loading products:", err);
-            }
-        });
-    }
-
-    function renderTopRating(){
-        if (currentPage["topRated"] === 4) {
-            return;
-        }
-        $.ajax({
-            url: `/topHighestRatingProducts`,
-            method: "GET",
-            data: {
-                page: currentPage["topRated"]++,
-                size: 5 // Adjust size if needed
-            },
-            success: function (data) {
-                // Update slider with new products
-                const sliderContainer = document.getElementById("top20RatedProductsSlider").querySelector(".product-container");
-                data.forEach(product => {
-                    const productCard = `
-                <div class="product-card">
-                    <img src="/api/images?imageName=${product.image}" alt="${product.productId}" class="product-image">
-                    <div class="product-info">
-                        <a href="/browser/product/${product.productId}" class="product-title" style="
-                            color: #fd7e14;
-                            overflow: hidden;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            width: 100%;
-                            font-weight: bold;
-                        ">${product.productName}</a>
-                        <p class="product-price">Giá: ${new Intl.NumberFormat().format(product.cost)} đ</p>
-                        <p class = "rating"> Đánh giá: ${product.averageRating} <span class="star gold"><i class="fas fa-star"></i></span> </p>
-                        <button onclick="addToCart('${product.productCode}')" class="btn btn-custom add-to-cart" >Thêm vào giỏ hàng</button>
-                    </div>
-                </div>
-            `;
-                    sliderContainer.innerHTML += productCard;
-                });
-            },
-            error: function (err) {
-                console.error("Error loading products:", err);
-            }
-        });
-    }
-
-    renderBestSellers();
-
-    renderNewestProduct();
-
-    renderTopRating();
-
-</script>
-
-<script>
-    function  addToCart(productCode){
-        // Gửi yêu cầu AJAX đến API thêm vào giỏ hàng
-        // Gửi yêu cầu AJAX đến API thêm vào giỏ hàng
-        $.ajax({
-            url: '/customer/cart/add-to-cart',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                productCode: productCode,
-                quantity: 1
-            }),
-            success: function (response) {
-                if (response.indexOf('loginForm')>0) {
-                    // Chuyển hướng đến trang đăng nhập
-                    window.location.href = '/auth/login';}
-                else {
-                    alert(response);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Error: " + xhr.responseText);
-            }
-        });
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-        const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
-        addToCartButtons.forEach(button => {
-            button.addEventListener("click", function () {
-                const productCode = this.getAttribute("data-product-code");
-
-                // Gửi yêu cầu AJAX đến API thêm vào giỏ hàng
-                $.ajax({
-                    url: '/customer/cart/add-to-cart',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        productCode: productCode,
-                        quantity: 1
-                    }),
-                    success: function (response) {
-                        if (response.indexOf('loginForm')>0) {
-                            // Chuyển hướng đến trang đăng nhập
-                            window.location.href = '/auth/login';}
-                        else {
-                            alert(response);
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert("Error: " + xhr.responseText);
-                    }
-                });
-            });
-        });
-    });
-</script>
+<script src="/assets/js/main.js"></script>
 
 </body>
 </html>

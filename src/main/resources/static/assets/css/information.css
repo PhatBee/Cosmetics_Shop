@@ -1,0 +1,21 @@
+body {
+    background-color: #f8f9fa; /* Light background color */
+    height: 100vh; /* Full height */
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text */
+}
+.error-container {
+    background-color: white; /* White background for the error box */
+    padding: 40px; /* Padding around the content */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+.error-title {
+    font-size: 100px; /* Large font size for the error code */
+    color: #dc3545; /* Bootstrap danger color for emphasis */
+}
+.btn-home {
+    margin-top: 20px; /* Space above the button */
+}
