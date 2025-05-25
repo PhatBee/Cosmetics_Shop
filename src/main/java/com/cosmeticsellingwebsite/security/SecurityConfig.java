@@ -194,7 +194,7 @@ public class SecurityConfig {
                 // Fonts - bao gồm local fonts và Google Fonts
                 "font-src 'self' https://fonts.googleapis.com/ https://use.fontawesome.com https://cdnjs.cloudflare.com http://127.0.0.1:5500 http://localhost:8081 https://fonts.gstatic.com data:; " +
                 // Images - cho phép tất cả HTTPS và data URLs
-                "img-src 'self' https://cdn.chanhtuoi.com/ https://scontent.fsgn5-9.fna.fbcdn.net http://127.0.0.1:5500 http://localhost:8081 http://localhost:8081/api/images https://via.placeholder.com https://www.facebook.com https://source.unsplash.com data:; " +
+                "img-src 'self' https://cdn.iconscout.com/ https://files.softicons.com/ https://cdn.haitrieu.com/ https://static.thcdn.com/ https://cdn.chanhtuoi.com/ https://scontent.fsgn5-9.fna.fbcdn.net http://127.0.0.1:5500 http://localhost:8081 http://localhost:8081/api/images https://via.placeholder.com https://www.facebook.com https://source.unsplash.com data:; " +
                 // AJAX connections
                 "connect-src 'self' http://127.0.0.1:5500 http://localhost:8081 https://www.google.com https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; " +
                 // Media files (video, audio)

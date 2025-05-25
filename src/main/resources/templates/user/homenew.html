@@ -5,16 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <!--    <link rel="stylesheet" href="/assets/css/grid.css">-->
-    <!--    <link rel="stylesheet" href="/assets/css/main.css">-->
-    <!--    <link rel="stylesheet" href="/assets/css/responsive.css">-->
     <link href="https://fonts.googleapis.com/css2?family=Comforter+Brush&family=Estonia&family=Kaushan+Script&family=Marck+Script&family=Nothing+You+Could+Do&family=Patrick+Hand&family=Roboto&family=Satisfy&family=Sawarabi+Gothic&family=Tangerine:wght@700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/css2-font.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/homenew.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -43,7 +39,6 @@
             <div class="product-slider" id="bestSellersSlider">
                 <button class="slider-button prev" data-slider="bestSellersSlider" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                 <div class="product-container">
-                    <!-- Thymeleaf content will be injected by renderBestSellers() -->
                 </div>
                 <button class="slider-button next" data-slider="bestSellersSlider" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
@@ -54,21 +49,17 @@
             <div class="product-slider" id="newArrivalsSlider">
                 <button class="slider-button prev" data-slider="newArrivalsSlider" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                 <div class="product-container">
-                    <!-- Thymeleaf content will be injected by renderNewestProduct() -->
                 </div>
                 <button class="slider-button next" data-slider="newArrivalsSlider" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
 
         <section>
-            <br>
-            <br>
-            <br>
-            <h2 class="section-title">Top Sản Phẩm Đánh Giá Cao Nhât</h2>
+            <br><br><br>
+            <h2 class="section-title">Top Sản Phẩm Đánh Giá Cao Nhất</h2>
             <div class="product-slider" id="top20RatedProductsSlider">
                 <button class="slider-button prev" data-slider="top20RatedProductsSlider" data-direction="-1"><i class="fas fa-chevron-left"></i></button>
                 <div class="product-container">
-                    <!-- Thymeleaf content will be injected by renderTopRating() -->
                 </div>
                 <button class="slider-button next" data-slider="top20RatedProductsSlider" data-direction="1"><i class="fas fa-chevron-right"></i></button>
             </div>
@@ -78,13 +69,6 @@
     <div class="footer" th:replace="~{user/fragments/footer::footer}">
     </div>
 </div>
-<!--    modal-->
-<!--<script src="/assets/js/showHide.js"></script>-->
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
-<!--jquery-->
-<script src="/assets/js/jquery-3.6.0.min.js"></script>
-
-<script src="/assets/js/main.js"></script>
-
+<script src="/assets/js/homenew.js"></script>
 </body>
 </html>

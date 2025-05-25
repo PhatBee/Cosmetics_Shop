@@ -13,35 +13,48 @@
 <div class="container my-5">
     <div class="row">
         <div class="col-md-6">
-            <img th:src="@{/api/images(imageName=${product.image})}" alt="Product Image" class="img-fluid rounded">
+            <img th:src="@{/api/images(imageName=${product.image})}" alt="Product Image" class="img-fluid rounded product-image">
         </div>
         <div class="col-md-6">
             <h1 th:text="${product.productName}">Product Name</h1>
             <p class="text-muted" th:text="${'Mã sản phẩm: ' + product.productCode}"></p>
             <div class="mb-3">
-                <span class="star-rating" th:each="i : ${#numbers.sequence(1, 5)}"> <i class="fas fa-star"
-                                                                                       th:classappend="${i <= product.averageRating ? 'text-warning' : 'text-secondary'}"></i> </span>
+                <span class="star-rating" th:each="i : ${#numbers.sequence(1, 5)}">
+                    <i class="fas fa-star" th:classappend="${i <= product.averageRating ? 'text-warning' : 'text-secondary'}"></i>
+                </span>
                 <span th:text="${'(' + product.averageRating + ' / 5) ' + product.totalFeedback + ' đánh giá'}"></span>
             </div>
-            <h2 class="text-primary mb-3" id="product-price" th:text="${#numbers.formatDecimal(product.cost, 1, 2)+' đ'}"></h2>
-            <p><strong th:text="${'Thương hiệu: ' + product.brand}">Brand:</strong> </p>
+            <h2 class="text-primary mb-3" id="product-price" th:attr="data-price=${product.cost}" th:text="${#numbers.formatDecimal(product.cost, 1, 2)+' đ'}"></h2>
+            <p><strong th:text="${'Thương hiệu: ' + product.brand}">Brand:</strong></p>
             <p><strong th:text="${'Danh mục sản phẩm: ' + product.category}"></strong></p>
-            <p><strong th:text="${'Số lượng trong kho: ' + product.stock}">Stock:</strong> </p>
-            <p><strong th:text="${'Đã bán: ' + product.totalSold}">Total Sold:</strong> </p>
+            <p><strong th:text="${'Số lượng trong kho: ' + product.stock}">Stock:</strong></p>
+            <p><strong th:text="${'Đã bán: ' + product.totalSold}">Total Sold:</strong></p>
             <p class="text-success"><i class="fas fa-check-circle"></i> Còn hàng</p>
-            <div class="input-group mt-3">
+            <div class="input-group">
                 <span class="input-group-text text-black">Số lượng</span>
                 <input type="number" id="inputQuantity" class="quantity input-group-text text-black" value="1" min="1">
             </div>
             <div th:if="${product.active}">
-                <button th:if="${product.stock > 0}" id="add-cart" class="btn btn-primary btn-lg mt-3"><i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng</button>
-                <button th:if="${product.stock == 0}" class="btn btn-secondary btn-lg mt-3" disabled><i class="fas fa-shopping-cart"></i> Sản phẩm hết hàng</button>
-                <button th:if="${product.stock > 0}" class="btn btn-success btn-lg mt-3" type="button">Mua ngay</button>
-                <button th:if="${product.stock == 0}" class="btn btn-success btn-lg mt-3" disabled type="button">Sản phẩm hết hàng</button>
+                <button th:if="${product.stock > 0}" id="add-cart" class="btn btn-primary btn-lg mt-3" th:attr="data-product-code=${product.productCode}">
+                    <i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+                </button>
+                <button th:if="${product.stock == 0}" class="btn btn-secondary btn-lg mt-3" disabled>
+                    <i class="fas fa-shopping-cart"></i> Sản phẩm hết hàng
+                </button>
+                <button th:if="${product.stock > 0}" class="btn btn-success btn-lg mt-3 buy-now" th:attr="data-product-code=${product.productCode}">
+                    Mua ngay
+                </button>
+                <button th:if="${product.stock == 0}" class="btn btn-success btn-lg mt-3" disabled type="button">
+                    Sản phẩm hết hàng
+                </button>
             </div>
             <div th:unless="${product.active}">
-                <button class="btn btn-secondary btn-lg mt-3" disabled><i class="fas fa-shopping-cart"></i> Sản phẩm đã ngừng kinh doanh</button>
-                <button class="btn btn-success btn-lg mt-3" disabled type="button">Sản phẩm đã ngừng kinh doanh</button>
+                <button class="btn btn-secondary btn-lg mt-3" disabled>
+                    <i class="fas fa-shopping-cart"></i> Sản phẩm đã ngừng kinh doanh
+                </button>
+                <button class="btn btn-success btn-lg mt-3" disabled type="button">
+                    Sản phẩm đã ngừng kinh doanh
+                </button>
             </div>
         </div>
     </div>
@@ -70,9 +83,7 @@
                 </tr>
                 <tr>
                     <th>Cách sử dụng</th>
-                    <td th:text="${product.how_to_use}">Apply a small amount to clean face and neck, morning and
-                        night.
-                    </td>
+                    <td th:text="${product.how_to_use}">Apply a small amount to clean face and neck, morning and night.</td>
                 </tr>
                 <tr>
                     <th>Thể tích</th>
@@ -92,7 +103,8 @@
             <div class="review-card" th:each="feedback : ${product.productFeedbacks}">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="mb-0" th:text="${feedback.customerName}">Jane Doe</h5>
-                    <p>Đánh giá cho sản phẩm: <span th:text="${feedback.productSnapshotName}">productSnapshotName name goes here</span>
+                    <p>Đánh giá cho sản phẩm:
+                        <span th:text="${feedback.productSnapshotName}">productSnapshotName name goes here</span>
                         <span class="star-rating">
                             <i class="fas fa-star" th:classappend="${feedback.rating >= 1 ? 'filled' : ''}"></i>
                             <i class="fas fa-star" th:classappend="${feedback.rating >= 2 ? 'filled' : ''}"></i>
@@ -100,18 +112,17 @@
                             <i class="fas fa-star" th:classappend="${feedback.rating >= 4 ? 'filled' : ''}"></i>
                             <i class="fas fa-star" th:classappend="${feedback.rating >= 5 ? 'filled' : ''}"></i>
                         </span>
+                    </p>
                 </div>
                 <p class="text-muted mb-2" th:text="${'Đánh giá vào '+#temporals.format(feedback.feedbackDate, 'dd MMMM yyyy HH:mm:ss')}">May 21, 2023</p>
                 <p th:text="${feedback.comment}">This cream has done wonders for my skin! Highly recommend.</p>
                 <div th:if="${feedback.image != null and feedback.image != ''}">
-                    <img th:src="@{/api/images(imageName=${feedback.image})}" alt="Review Image"
-                         class="review-image mb-2">
+                    <img th:src="@{/api/images(imageName=${feedback.image})}" alt="Review Image" class="review-image mb-2">
                 </div>
                 <div class="shop-response" th:if="${feedback.feedbackResponse != null}">
                     <p><strong>Phản hồi từ Shop:</strong></p>
                     <p class="text-muted mb-2" th:text="${#temporals.format(feedback.feedbackResponse.responseDate, 'dd MMMM yyyy HH:mm:ss')}">May 21, 2023</p>
-                    <p th:text="${feedback.feedbackResponse.comment}">Thank you for your feedback! We're glad you're
-                        enjoying our product.</p>
+                    <p th:text="${feedback.feedbackResponse.comment}">Thank you for your feedback! We're glad you're enjoying our product.</p>
                 </div>
             </div>
         </div>
@@ -121,7 +132,5 @@
 <script src="/assets/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/js/jquery-3.6.0.min.js"></script>
 <script src="/assets/js/product-detail.js"></script>
-
-
 </body>
 </html>
