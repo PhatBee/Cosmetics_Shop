@@ -218,7 +218,7 @@ public class SecurityConfig {
                 // Prefetch/DNS
 //                "prefetch-src 'self' " +
                 // Script-src-elem
-                "script-src-elem 'self' https://www.gstatic.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; "
+                "script-src-elem 'self' https://www.google.com/recaptcha/ https://www.gstatic.com http://127.0.0.1:5500 http://localhost:8081 https://cdn.jsdelivr.net https://code.jquery.com; "
                 ;
 
 //
