@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Lấy CSRF token và header từ meta tags
     const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
     const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
-
+    console.log("CSRF Token:", csrfToken);
     // Thiết lập CSRF token cho tất cả AJAX requests
     $.ajaxSetup({
         beforeSend: function(xhr) {
@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
         form.method = 'POST';
         form.action = '/customer/order/preview-checkout';
 
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_csrf'; // Spring Security expects this name for form submissions
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+
         selectedItems.forEach(id => {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -34,6 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         document.body.appendChild(form);
+        console.log(csrfHeader+"\nCSRF Token:", csrfToken);
+
         form.submit();
     }
 
