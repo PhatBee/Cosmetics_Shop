@@ -9,6 +9,7 @@ import com.cosmeticsellingwebsite.security.oauth.CustomOAuth2UserService;
 import com.cosmeticsellingwebsite.security.oauth.OAuth2LoginSuccessHandler;
 import com.cosmeticsellingwebsite.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -25,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -69,6 +71,12 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofStrict(); // Thay đổi từ Lax sang Strict
+    }
+
+
+    @Bean
         public CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500"));
@@ -89,7 +97,17 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false) // Không cấm đăng nhập nếu đạt giới hạn
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+//                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers(
+                                "/api/**",
+                                "/oauth2/**",
+                                "/auth/register"
+                        )
+                )
+
                 // Sau đó sử dụng trong securityFilterChain (Spring Security 6.1+):
                 // Cấu hình Security Headers cải tiến
                 // Cấu hình Security Headers cải tiến (Spring Security 6.1+)

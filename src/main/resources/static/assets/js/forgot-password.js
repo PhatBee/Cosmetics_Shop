@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
     // Hàm cho reCAPTCHA
     window.enableBtn = function () {
         document.getElementById("sendMail").disabled = false;
