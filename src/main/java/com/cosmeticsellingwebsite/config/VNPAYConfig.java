@@ -13,8 +13,9 @@ public class VNPAYConfig {
 //    public static String vnp_TmnCode = "1"; // kiểm tra email sau
 //    public static String vnp_HashSecret = "2"; // khi đăng ký Test
 
-    public static String vnp_TmnCode = "KB5K1R3O";
-    public static String secretKey = "DRL1UDET368OAIX1VCSU50HT02URDN2H";
+    //đổi thành
+    public static String vnp_TmnCode = System.getenv("VNPAY_TMN_CODE");
+    public static String secretKey = System.getenv("VNPAY_SECRET_KEY");
 
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
