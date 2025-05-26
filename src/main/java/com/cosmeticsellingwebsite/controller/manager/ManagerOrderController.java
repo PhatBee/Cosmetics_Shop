@@ -7,6 +7,8 @@ import com.cosmeticsellingwebsite.enums.OrderStatus;
 import com.cosmeticsellingwebsite.exception.EntityNotFoundException;
 import com.cosmeticsellingwebsite.service.impl.OrderService;
 import com.cosmeticsellingwebsite.util.Logger;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,10 @@ public class ManagerOrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @GetMapping
     public String listOrders(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -66,9 +72,13 @@ public class ManagerOrderController {
 
 
     @GetMapping("/{orderId}/product-detail-snapshot/{productId}")
-    public String productDetailSnapshot(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId, Model model) {
+    public String productDetailSnapshot(@PathVariable("orderId") Long orderId, @PathVariable("productId") Long productId, Model model) throws JsonProcessingException {
         ProductSnapshotDTO productSnapshot = orderService.getProductSnapshot(orderId, productId);
         model.addAttribute("productSnapshot", productSnapshot);
+
+        String productSnapshotJson = objectMapper.writeValueAsString(productSnapshot);
+        model.addAttribute("productSnapshotJson", productSnapshotJson);
+
         return "customer/product-snapshot";
     }
 

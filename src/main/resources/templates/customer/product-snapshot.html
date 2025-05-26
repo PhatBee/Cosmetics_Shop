@@ -1,17 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Chi tiết sản phẩm</title>
+ <title th:text="${productSnapshot != null} ? ${productSnapshot.productName} : 'Chi tiết sản phẩm'">Chi tiết sản phẩm</title>
  <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
  <link rel="stylesheet" href="/assets/css/product-snapshot.css">
 </head>
 <body>
 <div class="container my-5">
+ <!-- Truyền dữ liệu sản phẩm qua data attribute -->
+ <div id="product-data"
+      th:attr="data-product=${productSnapshotJson}"
+      ></div>
+
  <div class="row">
   <div class="col-md-6 mb-4">
-   <img src="https://via.placeholder.com/500" alt="Hình ảnh sản phẩm" class="img-fluid product-image">
+   <img src="" alt="Hình ảnh sản phẩm" class="img-fluid product-image">
   </div>
   <div class="col-md-6">
    <div class="product-info">
@@ -40,16 +45,12 @@
   </div>
   <div class="col-md-6">
    <h2 class="mb-3">Hướng dẫn sử dụng</h2>
-   <p id="howToUse">1. Làm sạch da mặt<br>
-    2. Thoa đều sản phẩm lên da<br>
-    3. Massage nhẹ nhàng</p>
+   <p id="howToUse">1. Làm sạch da mặt<br>2. Thoa đều sản phẩm lên da<br>3. Massage nhẹ nhàng</p>
   </div>
  </div>
 </div>
+
 <script src="/assets/js/bootstrap.bundle.min.js"></script>
-<script th:inline="javascript">
- document.querySelector('body').setAttribute('data-product-data', JSON.stringify(/*[[${productSnapshot}]]*/ null).replace(/"/g, "'"));
-</script>
 <script src="/assets/js/product-snapshot.js"></script>
 </body>
 </html>

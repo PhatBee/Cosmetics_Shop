@@ -2,162 +2,88 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.w3.org/1999/xhtml"
       layout:decorate="~{admin/layout-admin.html}">
-
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-<section class="container mt-4" layout:fragment="app-content">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa User</title>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .form-container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-
-        .form-container h1 {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #0d6efd;
-            margin-bottom: 20px;
-        }
-
-        .error-message {
-            color: red;
-            font-size: 0.875rem;
-        }
-    </style>
-<div class="container mt-5 d-flex justify-content-center">
-    <div class="col-lg-6 form-container">
-        <h1>Sửa User</h1>
-        <form th:action="@{/admin/user/edit/{id}(id=${user.userId})}" th:object="${user}" method="post" enctype="multipart/form-data">
-            <input type="hidden" id="userId" name="userId" th:value="${user.userId}">
-            <div class="mb-3">
-                <label for="username" class="form-label">Tên đăng nhập:</label>
-                <input type="text" id="username" name="username" th:value="${user.username}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Mật khẩu:</label>
-                <input type="password" id="password" name="password" th:value="${user.password}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="email" id="email" name="email" th:value="${user.email}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="fullname" class="form-label">Họ và tên:</label>
-                <input type="text" id="fullname" name="fullname" th:value="${user.fullname}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="phone" class="form-label">Số điện thoại:</label>
-                <input type="text" id="phone" name="phone" th:value="${user.phone}" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="gender" class="form-label">Giới tính:</label>
-                <select id="gender" name="gender" class="form-control">
-                    <option value="MALE" th:selected="${user.gender == 'MALE'}">Nam</option>
-                    <option value="FEMALE" th:selected="${user.gender == 'FEMALE'}">Nữ</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="role" class="form-label">Vai trò:</label>
-                <select id="role" name="role.roleId" class="form-control">
-                    <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"
-                            th:selected="${role.roleId == user.role.roleId}"></option>
-                </select>
-            </div>
-<!--            active or inactive-->
-            <div class="mb-3">
-                <label for="active" class="form-label">Trạng thái:</label>
-                <select id="active" name="active" class="form-control">
-                    <option value="true" th:selected="${user.active}">Active</option>
-                    <option value="false" th:selected="${!user.active}">Inactive</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <label class="block font-semibold mb-2">Hình ảnh đại diện:</label>
-                <div class="flex items-center gap-2">
-                    <button id="customButton" type="button" class="choose-file-button">Chọn hình ảnh</button>
-                    <span id="fileName" class="text-gray-500">Chưa có file được chọn</span>
+    <link rel="stylesheet" href="/assets/css/editUser.css">
+</head>
+<body>
+<section class="container mt-4" layout:fragment="app-content">
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="col-lg-6 form-container">
+            <h1>Sửa User</h1>
+            <form th:action="@{/admin/user/edit/{id}(id=${user.userId})}" th:object="${user}" method="post" enctype="multipart/form-data" id="editUserForm">
+                <input type="hidden" id="userId" name="userId" th:value="${user.userId}">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Tên đăng nhập:</label>
+                    <input type="text" id="username" name="username" th:value="${user.username}" class="form-control" required>
                 </div>
-                <input type="file" id="imageInput" name="imagePath" accept="image/*" hidden>
-                <img id="imagePreview" th:src="@{'/api/images?imageName=' + ${user.image}}" alt="Image Preview"
-                     style="width: 200px; height: 200px;  border-radius: 50%; margin-top: 10px;
-                                               object-fit: cover;
-                                                object-position: center;">
-            </div>
-            <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-        </form>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mật khẩu:</label>
+                    <input type="password" id="password" name="password" th:value="${user.password}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" th:value="${user.email}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Họ và tên:</label>
+                    <input type="text" id="fullname" name="fullname" th:value="${user.fullname}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Số điện thoại:</label>
+                    <input type="text" id="phone" name="phone" th:value="${user.phone}" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Giới tính:</label>
+                    <select id="gender" name="gender" class="form-control">
+                        <option value="MALE" th:selected="${user.gender == 'MALE'}">Nam</option>
+                        <option value="FEMALE" th:selected="${user.gender == 'FEMALE'}">Nữ</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label">Vai trò:</label>
+                    <select id="role" name="role.roleId" class="form-control">
+                        <option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"
+                                th:selected="${role.roleId == user.role.roleId}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="active" class="form-label">Trạng thái:</label>
+                    <select id="active" name="active" class="form-control">
+                        <option value="true" th:selected="${user.active}">Active</option>
+                        <option value="false" th:selected="${!user.active}">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block font-semibold mb-2">Hình ảnh đại diện:</label>
+                    <div class="flex items-center gap-2">
+                        <button id="customButton" type="button" class="choose-file-button">Chọn hình ảnh</button>
+                        <span id="fileName" class="text-gray-500">Chưa có file được chọn</span>
+                    </div>
+                    <input type="file" id="imageInput" name="imagePath" accept="image/*" hidden>
+                    <img class="img-edit-user" id="imagePreview" th:src="@{'/api/images?imageName=' + ${user.image}}" alt="Image Preview">
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
-    <script>
-        const imageInput = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const customButton = document.getElementById('customButton');
-        const fileNameDisplay = document.getElementById('fileName');
-        let selectedFile = null; // Biến lưu trữ file được chọn
 
-        let previousImageUrl = imagePreview.src === "#" ? null : imagePreview.src;
-
-        // Click vào nút tùy chỉnh để kích hoạt input file
-        customButton.addEventListener('click', function () {
-            imageInput.click();
-        });
-
-        // Hiển thị ảnh được chọn
-        function displayImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    previousImageUrl = imagePreview.src;
-                    imagePreview.src = e.target.result;
-                    selectedFile = input.files[0]; // Lưu trữ file được chọn
-                    imagePreview.style.display = 'block';
-                    fileNameDisplay.textContent = input.files[0].name; // Cập nhật tên file
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // Khôi phục ảnh trước đó
-        function restorePreviousImage() {
-            if (previousImageUrl) {
-                imagePreview.src = previousImageUrl;
-                imagePreview.style.display = 'block';
-            } else {
-                imagePreview.style.display = 'none';
-            }
-            fileNameDisplay.textContent = "No file chosen"; // Khôi phục trạng thái tên file
-        }
-
-        // Xử lý khi file input thay đổi
-        imageInput.addEventListener('change', function () {
-            if (this.files.length > 0) {
-                displayImage(this);
-            } else {
-                restorePreviousImage();
-            }
-        });
-
-        // Xử lý khi người dùng nhấp vào input file
-        imageInput.addEventListener('click', function () {
-            // Đặt lại giá trị chỉ khi cần
-            setTimeout(() => {
-                this.value = ''; // Đặt lại input file về rỗng
-            }, 0); // Đảm bảo thực hiện sau khi sự kiện click hoàn thành
-        });
-    </script>
-<script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/editUser.js"></script>
 </section>
+</body>
+</html>

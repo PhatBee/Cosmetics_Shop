@@ -1,32 +1,39 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const productData = document.querySelector('script[th:inline="javascript"]').getAttribute('data-product-data');
+    // Lấy dữ liệu sản phẩm từ data attribute
+    const productDataElement = document.getElementById('product-data');
+    const productData = productDataElement ? JSON.parse(productDataElement.getAttribute('data-product')) : null;
 
     // Populate the HTML with the product data
     if (productData) {
-        const parsedProductData = JSON.parse(productData.replace(/'/g, '"'));
-        document.title = parsedProductData.productName;
-        document.querySelector('h1').textContent = parsedProductData.productName;
-        document.getElementById('productCode').textContent = parsedProductData.productCode;
-        document.getElementById('cost').textContent = parsedProductData.cost.toLocaleString('vi-VN') + ' đ';
-        document.getElementById('brand').textContent = parsedProductData.brand;
-        document.getElementById('origin').textContent = parsedProductData.origin;
-        document.getElementById('volume').textContent = parsedProductData.volume;
-        document.getElementById('manufactureDate').textContent = new Date(parsedProductData.manufactureDate).toLocaleDateString('vi-VN');
-        document.getElementById('expirationDate').textContent = new Date(parsedProductData.expirationDate).toLocaleDateString('vi-VN');
-        document.getElementById('description').textContent = parsedProductData.description;
-        document.getElementById('ingredient').textContent = parsedProductData.ingredient;
-        document.getElementById('howToUse').innerHTML = parsedProductData.how_to_use.replace(/\n/g, '<br>');
-        document.querySelector('.product-image').src = '/api/images?imageName=' + parsedProductData.image;
+        document.title = productData.productName; // Đảm bảo tiêu đề được cập nhật
+        document.querySelector('h1').textContent = productData.productName;
+        document.getElementById('productCode').textContent = productData.productCode;
+        document.getElementById('cost').textContent = productData.cost.toLocaleString('vi-VN') + ' đ';
+        document.getElementById('brand').textContent = productData.brand;
+        document.getElementById('origin').textContent = productData.origin;
+        document.getElementById('volume').textContent = productData.volume;
+        document.getElementById('manufactureDate').textContent = new Date(productData.manufactureDate).toLocaleDateString('vi-VN');
+        document.getElementById('expirationDate').textContent = new Date(productData.expirationDate).toLocaleDateString('vi-VN');
+        document.getElementById('description').textContent = productData.description;
+        document.getElementById('ingredient').textContent = productData.ingredient;
+        document.getElementById('howToUse').innerHTML = productData.how_to_use.replace(/\n/g, '<br>');
+        document.querySelector('.product-image').src = '/api/images?imageName=' + productData.image;
+    } else {
+        console.error('Không tìm thấy dữ liệu sản phẩm.');
     }
 
     // Function to view direct
     function viewDirect() {
         if (productData) {
-            const parsedProductData = JSON.parse(productData.replace(/'/g, '"'));
-            window.location.href = '/browser/product/' + parsedProductData.productId;
+            window.location.href = '/browser/product/' + productData.productId;
+        } else {
+            console.error('Không thể chuyển hướng: Dữ liệu sản phẩm không tồn tại.');
         }
     }
 
     // Add event listener for view direct button
-    document.querySelector('.view-direct-btn').addEventListener('click', viewDirect);
+    const viewDirectBtn = document.querySelector('.view-direct-btn');
+    if (viewDirectBtn) {
+        viewDirectBtn.addEventListener('click', viewDirect);
+    }
 });

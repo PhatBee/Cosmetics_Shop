@@ -1,0 +1,112 @@
+    /* CSS cơ bản */
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #e0eafc, #cfdef3);
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap; /* Đảm bảo các thẻ nằm cùng hàng */
+    gap: 15px;
+}
+
+.col-4 {
+    flex: 1;
+    max-width: calc(33.333% - 15px);
+}
+
+/* Breadcrumb */
+.breadcrumb-area {
+    background-color: #f1f1f1;
+    padding: 15px 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.breadcrumb {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.breadcrumb-item {
+    margin-right: 10px;
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+}
+
+/* Card Styles */
+.card {
+    background: linear-gradient(135deg, #ffffff, #e3f2fd);
+    border: 0;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+#todayRevenue, #monthlyRevenue, #annualRevenue {
+    font-size: 28px;
+    font-weight: bold;
+    color: #212121;
+    margin: 0;
+}
+
+canvas {
+    margin-top: 20px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Hiệu ứng động */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}

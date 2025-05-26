@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <title>Phản hồi đánh giá</title>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/admin-feedback.css">
+
 </head>
 <body>
 <section class="container mt-4" layout:fragment="app-content">
@@ -29,7 +31,7 @@
                 <p><strong>Giá:</strong> <span th:text="${product.cost}"></span> VND</p>
                 <p><strong>Thương hiệu:</strong> <span th:text="${product.brand}"></span></p>
                 <p><strong>Hình ảnh:</strong></p>
-                <img th:src="@{${product.image}}" class="img-thumbnail" style="max-width: 200px;" alt="Product Image">
+                <img th:src="@{${product.image}}" class="img-thumbnail feedback-res-img" alt="Product Image">
             </div>
         </div>
 
@@ -46,7 +48,7 @@
                 <!-- Hiển thị hình ảnh đánh giá nếu có -->
                 <div th:if="${productFeedback.image != null}">
                     <p><strong>Hình ảnh đánh giá:</strong></p>
-                    <img th:src="@{/api/images(imageName=${productFeedback.image})}" class="img-thumbnail" style="max-width: 200px;"
+                    <img th:src="@{/api/images(imageName=${productFeedback.image})}" class="img-thumbnail feedback-res-img"
                          alt="Feedback Image">
                 </div>
                 <div th:if="${productFeedback.image == null}">
