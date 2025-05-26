@@ -67,6 +67,13 @@ document.addEventListener('DOMContentLoaded', function () {
             inputQuantity.value = quantity;
             form.appendChild(inputQuantity);
 
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_csrf'; // Spring Security expects this name for form submissions
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+
             document.body.appendChild(form);
             form.submit();
         });
