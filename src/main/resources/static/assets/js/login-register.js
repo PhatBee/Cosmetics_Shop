@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
     // Xóa sessionStorage và ghi log
     sessionStorage.clear();
     console.log("messageLogin: " + sessionStorage.length);
@@ -94,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $.ajax({
                 url: contextPath + 'auth/register',
                 type: 'POST',
+                headers: { [csrfHeader]: csrfToken },
                 data: formData,
                 success: function (response) {
                     showModalWithMessage(response);

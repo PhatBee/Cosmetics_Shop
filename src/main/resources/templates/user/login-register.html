@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="/assets/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/login-register.css">
 
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <title>Đăng Nhập và Đăng Ký</title>
 </head>
 <body>
@@ -24,7 +27,6 @@
         </div>
         <form id="loginForm" th:action="@{/login}" method="post">
 
-            <!-- CSRF token cho form đăng nhập -->
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div class="form-group">
@@ -51,8 +53,8 @@
     <div class="form-section">
         <h2>Đăng Ký</h2>
         <form id="registerForm" method="post" action="/auth/register">
-
             <!-- CSRF token cho form đăng ký - QUAN TRỌNG ĐỂ KHẮC PHỤC LỖ HỔNG -->
+
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
             <div class="form-group">

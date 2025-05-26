@@ -27,9 +27,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -59,11 +56,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CookieSameSiteSupplier cookieSameSiteSupplier() {
-        return CookieSameSiteSupplier.ofStrict(); // Thay đổi từ Lax sang Strict
-    }
-
-    @Bean
     public OAuth2LoginSuccessHandler oauth2LoginSuccessHandler(PasswordEncoder passwordEncoder) {
         return new OAuth2LoginSuccessHandler(passwordEncoder);
     }
@@ -77,6 +69,12 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return new UserService();
     }
+
+    @Bean
+    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofStrict(); // Thay đổi từ Lax sang Strict
+    }
+
 
     @Bean
         public CorsConfigurationSource corsConfigurationSource() {
@@ -93,27 +91,26 @@ public class SecurityConfig {
     // Configures the security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
         return httpSecurity
                 .sessionManagement(session -> session
                         .maximumSessions(1) // Chỉ cho phép 1 phiên đăng nhập cùng lúc
                         .maxSessionsPreventsLogin(false) // Không cấm đăng nhập nếu đạt giới hạn
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // CSRF Configuration - CHỈ DISABLE CHO CÁC ENDPOINT THỰC SỰ CẦN THIẾT
+//                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+
                 .csrf(csrf -> csrf
-                                // Sử dụng CookieCsrfTokenRepository để token có thể đọc được từ JavaScript
-                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                // CHỈ ignore các endpoint này
-                                .ignoringRequestMatchers(
-                                        "/api/images/**",           // Image serving endpoints
-                                        "/auth/login",              // Login endpoint
-                                        "/login",                   // Spring Security login processing
-                                        "/oauth2/**",               // OAuth2 endpoints
-                                        "/api/revenue/**"           // Revenue API (nếu cần)
-                                )
-                        // TẤT CẢ endpoints khác (bao gồm /customer/**) sẽ CÓ CSRF protection
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers(
+                                "/api/**",
+                                "/oauth2/**",
+                                "/auth/register"
+                        )
                 )
+
+                // Sau đó sử dụng trong securityFilterChain (Spring Security 6.1+):
+                // Cấu hình Security Headers cải tiến
+                // Cấu hình Security Headers cải tiến (Spring Security 6.1+)
                 .headers(headers -> headers
                         // Frame Options
                         .frameOptions(frameOptions -> frameOptions.deny())
