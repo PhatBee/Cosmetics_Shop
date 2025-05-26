@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Lấy CSRF token và header từ meta tags
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    // Thiết lập CSRF token cho tất cả AJAX requests
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        }
+    });
+
     // Biến toàn cục từ server (sẽ được truyền qua HTML)
     const contextPath = window.location.origin + '/';
     let currentCategoryId = 1; // Mặc định

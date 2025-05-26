@@ -1,0 +1,71 @@
+:root {
+    --primary-color: #e83e8c;
+    --secondary-color: #6f42c1;
+    --background-color: #f8f9fa;
+}
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+}
+.sidebar {
+    height: 100vh;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding-top: 20px;
+}
+.sidebar-sticky {
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, .75);
+    transition: all 0.3s;
+}
+.sidebar .nav-link:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.sidebar .nav-link.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.main-content {
+    padding: 20px;
+}
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.card-header {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+}
+.table {
+    border-radius: 15px;
+    overflow: hidden;
+}
+.table th {
+    background-color: var(--primary-color);
+    color: white;
+}
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 300px;
+    width: 100%;
+}
