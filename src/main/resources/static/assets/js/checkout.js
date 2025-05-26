@@ -1,129 +1,276 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let discountApplied = 0;
+    // Lấy CSRF token và header từ meta tags
+    const csrfToken = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
+    // Debug: Kiểm tra CSRF token
+    console.log('CSRF Token:', csrfToken);
+    console.log('CSRF Header:', csrfHeader);
+
+    // Thiết lập CSRF token cho tất cả AJAX requests
+    if (csrfToken && csrfHeader) {
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                // Chỉ thêm CSRF token cho non-GET requests
+                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                }
+            }
+        });
+    }
+
+    const addresses = JSON.parse(document.body.getAttribute('data-addresses') || '[]');
+    const isSingleProduct = parseInt(document.body.getAttribute('data-is-single-product') || '0');
+
+    // Function to generate a simple UUID
+    function generateSimpleUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 
     // Function to apply discount
     function applyDiscount() {
-        const discountCode = document.getElementById('discountCode').value.trim();
-        const discountMessage = document.getElementById('discountMessage');
-        const subtotalElement = document.getElementById('subtotal');
-        const discountElement = document.getElementById('discount');
-        const totalElement = document.getElementById('total');
+        const discountCode = $("#discountCode").val();
 
-        if (!discountCode) {
-            discountMessage.innerText = 'Vui lòng nhập mã giảm giá.';
-            discountMessage.className = 'text-danger mt-2';
+        if ($.trim(discountCode) === "") {
+            alert("Please enter a discount code!");
             return;
         }
 
+        const url = '/customer/voucher?voucherCode=' + encodeURIComponent(discountCode);
+
         $.ajax({
-            url: '/customer/order/apply-discount',
-            type: 'POST',
-            data: { discountCode: discountCode },
-            success: function (response) {
-                if (response.discountAmount) {
-                    discountApplied = response.discountAmount;
-                    discountMessage.innerText = 'Mã giảm giá được áp dụng thành công!';
-                    discountMessage.className = 'text-success mt-2';
+            url: url,
+            type: 'GET', // GET request không cần CSRF token
+            success: function (data) {
+                const subtotal = parseFloat($("#subtotal").text().replace(/[^\d.-]/g, ''));
+                const discount = data.voucherValue || 0;
+                let total = subtotal - discount;
 
-                    const subtotalText = subtotalElement.innerText.replace('₫', '').replace(',', '');
-                    const subtotal = parseFloat(subtotalText);
-                    const total = subtotal - discountApplied;
-
-                    discountElement.innerText = discountApplied.toLocaleString() + ' ₫';
-                    totalElement.innerText = total.toLocaleString() + ' ₫';
-                } else {
-                    discountMessage.innerText = response.message || 'Mã giảm giá không hợp lệ.';
-                    discountMessage.className = 'text-danger mt-2';
+                if (total < 0) {
+                    total = 0;
                 }
+
+                $("#discount").text('-' + discount.toLocaleString('vi-VN') + ' đ');
+                $("#total").text(total.toLocaleString('vi-VN') + ' đ');
             },
             error: function (xhr, status, error) {
-                discountMessage.innerText = 'Đã xảy ra lỗi khi áp dụng mã giảm giá.';
-                discountMessage.className = 'text-danger mt-2';
+                console.error('Apply discount error:', xhr.responseText);
+                alert("Error applying discount: " + (xhr.responseText || error));
             }
         });
     }
 
-    // Add event listener for apply discount button
-    document.querySelector('.apply-discount').addEventListener('click', applyDiscount);
+    // Function to handle place order
+    function placeOrder(event) {
+        event.preventDefault();
 
-    // Function to toggle temporary address form
-    function useTemporaryAddress() {
-        const temporaryAddressForm = document.getElementById('temporaryAddressForm');
-        const addressSelect = document.getElementById('addressSelect');
-        const checkbox = document.querySelector('.temporary-address-checkbox');
-
-        if (checkbox.checked) {
-            temporaryAddressForm.style.display = 'block';
-            addressSelect.disabled = true;
-        } else {
-            temporaryAddressForm.style.display = 'none';
-            addressSelect.disabled = false;
+        const paymentMethod = document.querySelector("input[name='paymentMethod']:checked")?.id;
+        if (!paymentMethod) {
+            alert("Please select a payment method!");
+            return;
         }
-    }
 
-    // Add event listener for temporary address checkbox
-    document.querySelector('.temporary-address-checkbox').addEventListener('change', useTemporaryAddress);
+        const cartItems = Array.from(document.querySelectorAll(".row.g-0")).map(row => {
+            const productCodeInput = row.querySelector("input[name='productCode']");
+            const quantityInput = row.querySelector("input[name='quantity']");
 
-    // Function to place order
-    function placeOrder() {
-        const addressSelect = document.getElementById('addressSelect');
-        const temporaryAddressCheckbox = document.querySelector('.temporary-address-checkbox');
-        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+            if (!productCodeInput || !quantityInput) {
+                console.error('Missing product code or quantity input in row:', row);
+                return null;
+            }
 
-        const orderData = {
+            return {
+                productCode: productCodeInput.value,
+                quantity: parseInt(quantityInput.value) || 1
+            };
+        }).filter(item => item !== null);
+
+        if (cartItems.length === 0) {
+            alert("No valid cart items found!");
+            return;
+        }
+
+        const voucherCodes = Array.from(document.querySelectorAll("#discountCode"))
+            .map(v => v.value)
+            .filter(value => value !== "");
+
+        let selectedAddressId = document.getElementById("address-select")?.value;
+        let selectedAddress = addresses.find(address => address.addressId == selectedAddressId);
+        let address = null;
+
+        if (document.getElementById("newAddress")?.checked) {
+            address = {
+                receiverName: document.getElementById("fullName")?.value || '',
+                receiverPhone: document.getElementById("phone")?.value || '',
+                address: document.getElementById("address")?.value || '',
+                city: document.getElementById("city")?.value || '',
+                district: document.getElementById("district")?.value || '',
+                ward: document.getElementById("ward")?.value || '',
+                province: document.getElementById("city")?.value || ''
+            };
+
+            // Validate new address
+            if (!address.receiverName || !address.receiverPhone || !address.address) {
+                alert("Please fill in all required address fields!");
+                return;
+            }
+        } else {
+            address = selectedAddress;
+            if (!address) {
+                alert("Please select an address!");
+                return;
+            }
+        }
+
+        // Tạo request object
+        const createOrderRequest = {
+            address: address,
             paymentMethod: paymentMethod,
-            discountCode: document.getElementById('discountCode').value.trim()
+            cartItemForOrderDTOS: cartItems,
+            voucherCodes: voucherCodes
         };
 
-        if (temporaryAddressCheckbox.checked) {
-            const fullName = document.getElementById('fullName').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            const address = document.getElementById('address').value;
-            const province = document.getElementById('province').value;
-            const district = document.getElementById('district').value;
-            const ward = document.getElementById('ward').value;
+        console.log('Order request:', createOrderRequest);
 
-            if (!fullName || !phoneNumber || !address || !province || !district || !ward) {
-                alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng.');
-                return;
-            }
-
-            orderData.temporaryAddress = {
-                fullName: fullName,
-                phoneNumber: phoneNumber,
-                address: address,
-                province: province,
-                district: district,
-                ward: ward
-            };
-        } else {
-            const addressId = addressSelect.value;
-            if (!addressId) {
-                alert('Vui lòng chọn địa chỉ giao hàng.');
-                return;
-            }
-            orderData.addressId = addressId;
-        }
+        const url = isSingleProduct === 0 ? "/customer/order/create" : "/customer/order/create-single-product";
 
         $.ajax({
-            url: '/customer/order/place-order',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(orderData),
+            url: url,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(createOrderRequest),
+            beforeSend: function(xhr) {
+                // Explicitly set CSRF token for this request
+                if (csrfToken && csrfHeader) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                }
+            },
             success: function (response) {
+                console.log('Order created successfully:', response);
                 if (response.redirectUrl) {
-                    window.location.href = response.redirectUrl; // Redirect to payment gateway or success page
+                    window.location.href = response.redirectUrl;
                 } else {
-                    alert('Đặt hàng thành công!');
-                    window.location.href = '/customer/order/history';
+                    alert("Order created successfully!");
                 }
             },
             error: function (xhr, status, error) {
-                alert('Đã xảy ra lỗi khi đặt hàng: ' + xhr.responseText);
+                console.error('Place order error:', xhr);
+                let errorMessage = "Error placing order: ";
+
+                if (xhr.responseText) {
+                    try {
+                        const errorData = JSON.parse(xhr.responseText);
+                        errorMessage += errorData.message || xhr.responseText;
+                    } catch (e) {
+                        errorMessage += xhr.responseText;
+                    }
+                } else {
+                    errorMessage += error;
+                }
+
+                alert(errorMessage);
             }
         });
     }
 
-    // Add event listener for place order button
-    document.querySelector('.place-order').addEventListener('click', placeOrder);
+    // Function to handle address suggestions
+    const apiKey = 'NrT24q9uGwGNuzfOGsJO6whgLmM4iP7jQPmbL4X7';
+    const addressInput = document.getElementById('address');
+    const suggestionsContainer = document.getElementById('suggestions');
+    const cityInput = document.getElementById('city');
+    const districtInput = document.getElementById('district');
+    const wardInput = document.getElementById('ward');
+    let sessionToken = generateSimpleUUID();
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const debouncedSearch = debounce((query) => {
+        if (query.length < 2) {
+            if (suggestionsContainer) {
+                suggestionsContainer.style.display = 'none';
+            }
+            return;
+        }
+
+        fetch(`https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&input=${encodeURIComponent(query)}&sessiontoken=${sessionToken}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'OK' && suggestionsContainer) {
+                    suggestionsContainer.innerHTML = '';
+                    suggestionsContainer.style.display = 'block';
+
+                    data.predictions.forEach(prediction => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+                        div.textContent = prediction.description;
+                        div.addEventListener('click', () => {
+                            addressInput.value = prediction.description;
+                            suggestionsContainer.style.display = 'none';
+
+                            if (prediction.compound) {
+                                if (cityInput) cityInput.value = prediction.compound.province || '';
+                                if (districtInput) districtInput.value = prediction.compound.district || '';
+                                if (wardInput) wardInput.value = prediction.compound.commune || '';
+                            }
+                        });
+                        suggestionsContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch(error => console.error('Address suggestion error:', error));
+    }, 300);
+
+    // Event listeners
+    if (addressInput) {
+        addressInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+    }
+
+    document.addEventListener('click', function (e) {
+        if (suggestionsContainer && !suggestionsContainer.contains(e.target) && e.target !== addressInput) {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+
+    // Add event listeners with error handling
+    const applyDiscountBtn = document.querySelector('.apply-discount-btn');
+    const placeOrderBtn = document.querySelector('.place-order-btn');
+
+    if (applyDiscountBtn) {
+        applyDiscountBtn.addEventListener('click', applyDiscount);
+    }
+
+    if (placeOrderBtn) {
+        placeOrderBtn.addEventListener('click', placeOrder);
+    }
+
+    // Toggle address form visibility
+    const newAddressCheckbox = document.getElementById('newAddress');
+    const addressForm = document.querySelector('main.container');
+
+    if (newAddressCheckbox && addressForm) {
+        newAddressCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                addressForm.style.display = 'block';
+            } else {
+                addressForm.style.display = 'none';
+            }
+        });
+
+        // Initially hide the form
+        addressForm.style.display = 'none';
+    }
 });

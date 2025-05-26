@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Tab switching
     function toggleTab(event, tabId) {
         event.preventDefault();
-        const tabs = document.querySelectorAll(".myaccount-tab-menu a");
+        const tabs = document.querySelectorAll(".myaccount-tab-menu .tab-link");
         tabs.forEach(tab => tab.classList.remove("active"));
         const tabContents = document.querySelectorAll(".tab-pane");
         tabContents.forEach(content => content.classList.remove("active"));
@@ -10,13 +10,19 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(tabId).classList.add("active");
     }
 
-    // Expose toggleTab to global scope for inline onclick
-    window.toggleTab = toggleTab;
+    // Add event listener for tab links
+    document.querySelector('.myaccount-tab-menu').addEventListener('click', function (e) {
+        const target = e.target.closest('.tab-link');
+        if (target) {
+            const tabId = target.getAttribute('href').substring(1);
+            toggleTab(e, tabId);
+        }
+    });
 
     // Image upload handling
     const imageInput = document.getElementById('imageInput');
     const imagePreview = document.getElementById('imagePreview');
-    const customButton = document.getElementById('customButton');
+    const customButton = document.querySelector('#customButton');
     const fileNameDisplay = document.getElementById('fileName');
     let selectedFile = null;
     let previousImageUrl = imagePreview.src === "#" ? null : imagePreview.src;
@@ -89,21 +95,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Expose confirmDelete to global scope for inline onclick
-    window.confirmDelete = confirmDelete;
-});
+    // Add event listener for delete buttons
+    document.querySelector('.address-cards').addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-delete')) {
+            const addressId = e.target.getAttribute('data-address-id');
+            confirmDelete(addressId);
+        }
+    });
 
-document.querySelector('.myaccount-tab-menu').addEventListener('click', function (e) {
-    const target = e.target.closest('a');
-    if (target) {
-        const tabId = target.getAttribute('href').substring(1);
-        toggleTab(e, tabId);
-    }
-});
-
-document.querySelector('.address-cards').addEventListener('click', function (e) {
-    if (e.target.classList.contains('btn-delete')) {
-        const addressId = e.target.getAttribute('data-address-id');
-        confirmDelete(addressId);
-    }
+    // Add event listener for "Add new address" button
+    document.querySelector('.add-address-btn').addEventListener('click', function () {
+        window.location.href = '/customer/personal-info/address/new';
+    });
 });

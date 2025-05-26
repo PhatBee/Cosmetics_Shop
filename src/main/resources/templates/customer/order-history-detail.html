@@ -1,4 +1,3 @@
-<!--<!DOCTYPE html>--><!--<html lang="en">--><!--<head>--><!--    <meta charset="UTF-8">--><!--    <link href="<link rel="stylesheet" href="/assets/css/bootstrap.min.css">" rel="stylesheet"--><!--          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">--><!--    <style>--><!--        /* Add this CSS to your stylesheet */--><!--        .payment-detail .card {--><!--            border-color: #ced4da; /* Light gray border */--><!--            border-radius: 5px; /* Rounded corners */--><!--        }--><!--        .payment-detail label {--><!--            font-weight: bold;--><!--            display: block; /* Labels take up their own line */--><!--            margin-bottom: 0.25rem; /* Small space below labels */--><!--            color: #343a40; /* Dark gray for labels */--><!--        }--><!--        .payment-detail p {--><!--            margin: 0;--><!--            color: #666; /* Slightly lighter gray for values */--><!--        }--><!--        /*Optional - Style based on payment status*/--><!--        .payment-detail .payment-status-success {--><!--            color: green;--><!--        }--><!--        .payment-detail .payment-status-pending {--><!--            color: orange;--><!--        }--><!--        .payment-detail .payment-status-faile--><!--        }d {--><!--            color: red;--><!--        /* Container Styles */--><!--        .container {--><!--            margin-top: 50px;--><!--        }--><!--        /* Order Detail Styles */--><!--        .order-detail {--><!--            border: 1px solid #ddd;--><!--            padding: 20px;--><!--            border-radius: 0.5rem;--><!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);--><!--        }--><!--        .order-detail-header {--><!--            background-color: #f8f9fa;--><!--            padding: 10px;--><!--            border-bottom: 2px solid #007bff;--><!--        }--><!--        .order-detail-body {--><!--            padding: 20px;--><!--        }--><!--        .order-line {--><!--            margin-bottom: 10px;--><!--        }--><!--        .order-line .product-name {--><!--            font-weight: bold;--><!--        }--><!--        .order-line .product-quantity {--><!--            font-size: 16px;--><!--        }--><!--        .shipping-address {--><!--            padding: 20px;--><!--            border: 1px solid #ddd;--><!--        }--><!--        .shipping-address h5 {--><!--            font-weight: bold;--><!--        }--><!--        .shipping-address .address-details {--><!--            margin-top: 10px;--><!--        }--><!--        /* Custom Styles for Order Lines */--><!--        .order-line img {--><!--            border-radius: 5px; /* Rounded corners for images */--><!--            transition: transform 0.2s; /* Smooth scaling effect on hover */--><!--        }--><!--        .order-line img:hover {--><!--            transform: scale(1.05); /* Scale image slightly on hover */--><!--        }--><!--        .table {--><!--            margin-top: 20px; /* Space above the table */--><!--        }--><!--        .table th {--><!--            background-color: #007bff; /* Blue background for headers */--><!--            color: white; /* White text for headers */--><!--        }--><!--        .table td {--><!--            vertical-align: middle; /* Center align content vertically */--><!--        }--><!--        /* Responsive Design */--><!--        @media (max-width: 768px) {--><!--            .table {--><!--                font-size: 14px; /* Smaller font size on mobile */--><!--            }--><!--        }--><!--    </style>--><!--</head>--><!--<body>--><!--<div class="container">--><!--    <div class="order-detail">--><!--        <div class="order-detail-header">--><!--            <label>Order Detail</label>--><!--            <h2>Order ID: <span th:text="${orderDetail.orderId}"></span></h2>--><!--            <p>Ngày đặt hàng: <span th:text="${orderDetail.orderDate}"></span></p>--><!--            <p>Total: $<span th:text="${orderDetail.total}"></span></p>--><!--        </div>--><!--        <div class="order-detail-body">--><!--            <h3 class="text-center mb-4">Order Lines</h3>--><!--            <table class="table table-bordered table-striped">--><!--                <thead>--><!--                <tr>--><!--                    <th>Image</th>--><!--                    <th>Product Name</th>--><!--                    <th>Quantity</th>--><!--                    <th>Cost</th>--><!--                </tr>--><!--                </thead>--><!--                <tbody th:each="orderLine : ${orderDetail.orderLines}">--><!--                <tr class="order-line">--><!--                    <td>--><!--                        <img th:src="@{/api/images(imageName=${orderLine.productSnapshot.image})}" alt="Product Image" width="100" height="100" class="img-fluid">--><!--                    </td>--><!--                    <td>--><!--                        <a th:href="@{/customer/order/{orderId}/product-detail-snapshot/{productId}(orderId=${orderDetail.orderId}, productId=${orderLine.productSnapshot.productId})}" th:text="${orderLine.productSnapshot.productName}"></a>--><!--                    </td>--><!--                    <td th:text="${orderLine.quantity}">Quantity</td>--><!--                    <td th:text="${orderLine.productSnapshot.cost}">Cost</td>--><!--                </tr>--><!--                </tbody>--><!--            </table>--><!--            <h3>Shipping Address</h3>--><!--            <div class="shipping-address">--><!--                <h5 th:text="${orderDetail.shippingAddress.receiverName}">--><!--                    ${orderDetail.shippingAddress.receiverName}</h5>--><!--                <p class="address-details">--><!--                    <span>Phone:</span> <span th:text="${orderDetail.shippingAddress.receiverPhone}">${orderDetail.shippingAddress.receiverPhone}</span>--><!--                </p>--><!--                <p class="address-details">--><!--                    <span>Address:</span> <span th:text="${orderDetail.shippingAddress.address}">${orderDetail.shippingAddress.address}</span>,--><!--                    <span th:text="${orderDetail.shippingAddress.province}">${orderDetail.shippingAddress.province}</span>,--><!--                    <span th:text="${orderDetail.shippingAddress.district}">${orderDetail.shippingAddress.district}</span>,--><!--                    <span th:text="${orderDetail.shippingAddress.ward}">${orderDetail.shippingAddress.ward}</span>--><!--                </p>--><!--            </div>--><!--            <h3>Payment Detail</h3>--><!--            <div class="payment-detail">--><!--                <div class="card mb-3" style="border-color: #ced4da;">  &lt;!&ndash; Use card for better styling &ndash;&gt;--><!--                    <div class="card-body">--><!--                        <h5 class="card-title">Payment Details</h5>  &lt;!&ndash; Clearer label &ndash;&gt;--><!--                        <div class="form-row">  &lt;!&ndash; Use form-row for alignment &ndash;&gt;--><!--                            <div class="col-sm-4">--><!--                                <label class="col-form-label">Payment Method:</label>--><!--                                <p class="mb-1" th:text="${orderDetail.payment.paymentMethod}"></p>  &lt;!&ndash; Dynamic content &ndash;&gt;--><!--                            </div>--><!--                            <div class="col-sm-4">--><!--                                <label class="col-form-label">Payment Date:</label>--><!--                                <p class="mb-1" th:text="${orderDetail.payment.paymentDate}"></p>--><!--                            </div>--><!--                            <div class="col-sm-4">--><!--                                <label class="col-form-label">Payment Status:</label>--><!--                                <p class="mb-1" th:text="${orderDetail.payment.paymentStatus}"></p>--><!--                            </div>--><!--                        </div>--><!--                    </div>--><!--                </div>--><!--            </div>--><!--    </div>--><!--</div>--><!--</body>--><!--</html>-->
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
@@ -6,169 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <script src="/showMsg.js"></script>
     <link rel="stylesheet" href="/assets/css/tailwind.min.css">
-    <!--bootstrap-->
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/all.min.css">
-          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer">
-    <style>
-        /* ... Other styles ... */
+    <link rel="stylesheet" href="/assets/css/order-history-detail.css">
 
-        .history-timeline {
-            display: flex;                 /* Arrange items horizontally */
-            overflow-x: auto;             /* Enable horizontal scrolling if needed */
-            padding-bottom: 20px;          /* Add space for step connector*/
-        }
-
-
-        .history-item {
-            position: relative;
-            flex: 0 0 auto;          /* Prevent items from shrinking */
-            width: 150px;            /* Adjust width as needed */
-            margin-right: 30px;      /* Add spacing between items */
-            text-align: center;      /* Center text within each item */
-
-        }
-
-        .history-step {
-            width: 30px;              /* Adjust size as needed */
-            height: 30px;
-            border-radius: 50%;
-            background-color: #e2e8f0; /* Light gray background */
-            color: #4a5568; /* Dark gray text */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;     /* Center and add bottom margin */
-
-        }
-
-        .step-number {
-            font-weight: bold;
-        }
-
-        .history-details { /* Style the details below the circle */
-            margin-top: 10px; /* Space between the circle and the details */
-        }
-        .status {
-            font-weight: 600;       /* Semibold or bold font-weight */
-            margin-bottom: 5px;    /* Space between status and description*/
-        }
-
-
-        .description, .timestamp {
-            font-size: 0.9em; /* Slightly smaller font size for these elements */
-            color: #718096; /* Gray color */
-
-        }
-
-        .timestamp {
-            display: block; /* Place timestamp on its own line */
-        }
-
-        /* Styles for the connector lines between the steps (optional) */
-
-        /* This part is more complex and depends on your layout requirements.
-         If the steps should always be connected by a single line, you can achieve
-         this with ::before pseudo-elements and positioning.
-         If the number of steps is dynamic and the timeline scrolls, you will probably
-         need JavaScript to calculate the connector lengths dynamically. */
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-
-        .block {
-            display: block;
-        }
-
-        .font-semibold {
-            font-weight: 600;
-        }
-
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .w-full {
-            width: 100%;
-        }
-
-        .border {
-            border: 1px solid #d1d5db;
-        }
-
-        .rounded {
-            border-radius: 0.25rem;
-        }
-
-        .p-2 {
-            padding: 0.5rem;
-        }
-
-        select, textarea {
-            font-size: 1rem;
-            line-height: 1.5;
-        }
-
-        button {
-            background-color: #3b82f6;
-            color: #ffffff;
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #2563eb;
-        }
-
-        .star-rating {
-            font-size: 1.5rem;
-            color: #d1d5db;
-            cursor: pointer;
-        }
-
-        .star-rating .fa-star.active {
-            color: #fbbf24;
-        }
-    </style>
 </head>
-<body>
+
+<body th:attr="data-order-id=${orderDetail.orderId}, data-order-status=${orderDetail.orderStatus}">>
+
 <header th:replace="~{user/fragments/header::header}"></header>
 
 <div id="order-detail-container" class="max-w-7xl mx-auto p-4">
-    <button
-            style="margin: 0 auto; display: block;"
-            onclick="cancelOrder()"
-            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"    >
-        Hủy đơn hàng
-    </button>
-    <!--		button thanh toán lại, chỉ hiện khi orderstatus is pending-->
-    <div th:if = "${orderDetail.orderStatus.toString() == 'PENDING'}">
-        <button class="submit-btn" type="button" onclick="pay()" th:data-order-id="${orderDetail.orderId}"  th:data-order-status="${orderDetail.orderStatus.name()}">Thanh toán lại đơn hàng</button>
+    <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cancel-order-btn"
+            th:data-order-id="${orderDetail.orderId}">Hủy đơn hàng</button>
+    <!-- Button thanh toán lại, chỉ hiện khi orderStatus is PENDING -->
+    <div th:if="${orderDetail.orderStatus.toString() == 'PENDING'}">
+        <button type="button" class="submit-btn retry-payment-btn" th:data-order-id="${orderDetail.orderId}"
+                th:data-order-status="${orderDetail.orderStatus.name()}">Thanh toán lại đơn hàng</button>
     </div>
     <div class="bg-white shadow-lg rounded-lg">
         <div class="border border-neutral-300 rounded-lg">
             <div class="bg-neutral-100 p-4 border-b-2 border-primary-500">
                 <h2 class="font-title text-neutral-950 text-lg mb-2">Chi tiết đơn hàng</h2>
-                <span class="block text-neutral-700 mb-1">Mã đơn hàng: <span
-                        th:text="${orderDetail.orderId}"></span></span>
-                <span class="block text-neutral-700 mb-1">Ngày đặt hàng: <span
-                        th:text="${orderDetail.orderDate}"></span></span>
+                <span class="block text-neutral-700 mb-1">Mã đơn hàng: <span th:text="${orderDetail.orderId}"></span></span>
+                <span class="block text-neutral-700 mb-1">Ngày đặt hàng: <span th:text="${orderDetail.orderDate}"></span></span>
                 <span class="block text-neutral-700">Tổng cộng: <span th:text="${orderDetail.total}"></span>VND</span>
             </div>
             <div class="p-4">
                 <div class="p-4">
                     <h3 class="font-title text-neutral-950 text-lg mb-4">Lịch sử đơn hàng</h3>
                     <div class="history-timeline">
-                        <ul class="list-none flex"> <li th:each="history, iterStat : ${orderDetail.orderStatusHistories}" class="history-item flex-shrink-0">
-                            <div class="history-step">
-                                <span class="step-number" th:text="${iterStat.count}"></span> </div> <div class="history-details"> <h4 class="status" th:text="${history.status}"></h4> <p class="description" th:text="${history.description}"></p> <span class="timestamp" th:text="${#temporals.format(history.updateAt, 'dd-MM-yyyy HH:mm')}"></span> </div> <div class="connector" th:if="${!iterStat.last}"></div> </li>
+                        <ul class="list-none flex">
+                            <li th:each="history, iterStat : ${orderDetail.orderStatusHistories}" class="history-item flex-shrink-0">
+                                <div class="history-step">
+                                    <span class="step-number" th:text="${iterStat.count}"></span>
+                                </div>
+                                <div class="history-details">
+                                    <h4 class="status" th:text="${history.status}"></h4>
+                                    <p class="description" th:text="${history.description}"></p>
+                                    <span class="timestamp" th:text="${#temporals.format(history.updateAt, 'dd-MM-yyyy HH:mm')}"></span>
+                                </div>
+                                <div class="connector" th:if="${!iterStat.last}"></div>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -188,18 +66,14 @@
                     <tbody>
                     <tr th:each="orderLine : ${orderDetail.orderLines}" class="border border-neutral-300">
                         <td class="border border-neutral-300 p-2">
-                            <img
-                                    th:src="@{/api/images(imageName=${orderLine.productSnapshot.image})}"
-                                    alt="Product Image"
-                                    class="object-cover rounded-md" style="height: 150px"
-                                    th:onerror="'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='"
-                            >
+                            <img th:src="@{/api/images(imageName=${orderLine.productSnapshot.image})}"
+                                 alt="Product Image"
+                                 class="object-cover rounded-md">
+<!--                                 th:onerror="'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='">-->
                         </td>
                         <td>
-                            <a
-                                    th:href="@{/customer/order/{orderId}/product-detail-snapshot/{productId}(orderId=${orderDetail.orderId}, productId=${orderLine.productSnapshot.productId})}"
-                                    th:text="${orderLine.productSnapshot.productName}"
-                            >
+                            <a th:href="@{/customer/order/{orderId}/product-detail-snapshot/{productId}(orderId=${orderDetail.orderId}, productId=${orderLine.productSnapshot.productId})}"
+                               th:text="${orderLine.productSnapshot.productName}">
                             </a>
                         </td>
                         <td class="border border-neutral-300 p-2" th:text="${orderLine.quantity}"></td>
@@ -211,18 +85,13 @@
                 <h3 class="text-xl font-title mt-6">Shipping Address</h3>
                 <div class="p-4 border border-neutral-300 rounded-lg">
                     <h5 class="font-title text-neutral-950" th:text="${orderDetail.shippingAddress.receiverName}"></h5>
-                    <p class="text-neutral-700 my-1">Phone: <span
-                            th:text="${orderDetail.shippingAddress.receiverPhone}"></span></p>
-                    <p class="text-neutral-700 my-1">Address: <span
-                            th:text="${orderDetail.shippingAddress.address}"></span></p>
-                    <p class="text-neutral-700 my-1">Province: <span
-                            th:text="${orderDetail.shippingAddress.province}"></span></p>
-                    <p class="text-neutral-700 my-1">District: <span
-                            th:text="${orderDetail.shippingAddress.district}"></span></p>
-                    <p class="text-neutral-700 my-1">Ward: <span th:text="${orderDetail.shippingAddress.ward}"></span>
-                    </p>
+                    <p class="text-neutral-700 my-1">Phone: <span th:text="${orderDetail.shippingAddress.receiverPhone}"></span></p>
+                    <p class="text-neutral-700 my-1">Address: <span th:text="${orderDetail.shippingAddress.address}"></span></p>
+                    <p class="text-neutral-700 my-1">Province: <span th:text="${orderDetail.shippingAddress.province}"></span></p>
+                    <p class="text-neutral-700 my-1">District: <span th:text="${orderDetail.shippingAddress.district}"></span></p>
+                    <p class="text-neutral-700 my-1">Ward: <span th:text="${orderDetail.shippingAddress.ward}"></span></p>
                 </div>
-                <!-- Payment-->
+                <!-- Payment -->
                 <h3 class="text-xl font-title mt-6">Thông tin thanh toán Detail</h3>
                 <div class="border border-neutral-300 rounded-lg p-4">
                     <div class="flex flex-row gap-4">
@@ -237,7 +106,6 @@
                         <div>
                             <span class="block text-neutral-950 font-semibold">Payment Status:</span>
                             <p class="text-green-600" th:text="${orderDetail.payment.paymentStatus}">Success</p>
-                            <!-- Default Success -->
                         </div>
                     </div>
                 </div>
@@ -275,281 +143,43 @@
             <div class="mb-4">
                 <label class="block font-semibold mb-2">Thêm ảnh:</label>
                 <div class="flex items-center gap-2">
-                    <button id="customButton" type="button" class="px-4 py-2 bg-blue-500 text-white rounded">Choose
+                    <button type="button" id="customButton" class="px-4 py-2 bg-blue-500 text-white rounded">Choose
                         File
                     </button>
                     <span id="fileName" class="text-gray-500">No file chosen</span>
                 </div>
                 <input type="file" id="imageInput" name="image" accept="image/*" class="hidden">
-                <img id="imagePreview" src="#" alt="Image Preview"
-                     style="max-width: 200px; max-height: 200px; display: none; margin-top: 10px;">
+                <img id="imagePreview image_review_in" src="#" alt="Image Preview">
             </div>
             <div>
-                <button type="button" id="submitReview" class="w-full">
-                    Gửi đánh giá
-                </button>
+                <button type="button" id="submitReview" class="w-full">Gửi đánh giá</button>
             </div>
         </div>
     </div>
 
-</div>
-
-
-<!-- Modal -->
-
-<div class="modal fade" id="customModal" tabindex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="customModalLabel">Dynamic Modal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                        id="closeButton"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Message content -->
-                <div id="message">Default message</div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="okButton">OK</button>
+    <!-- Modal -->
+    <div class="modal fade" id="customModal" tabindex="-1" aria-labelledby="customModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customModalLabel">Dynamic Modal</h5>
+                    <button type="button" class="btn-close close-modal-btn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="message">Default message</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary close-modal-btn" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary ok-modal-btn">OK</button>
+                </div>
             </div>
         </div>
     </div>
+    <script src="/assets/js/jquery-3.6.0.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/order-history-detail.js"></script>
+    <footer th:replace="~{user/fragments/footer::footer}"></footer>
 </div>
-<script th:inline="javascript">
-    const orderId = [[${orderDetail.orderId}]];
-    const orderStatus = [[${orderDetail.orderStatus}]];
-
-</script>
-<script>
-    const imageInput = document.getElementById('imageInput');
-    const imagePreview = document.getElementById('imagePreview');
-    const customButton = document.getElementById('customButton');
-    const fileNameDisplay = document.getElementById('fileName');
-    let selectedFile = null; // Biến lưu trữ file được chọn
-
-    let previousImageUrl = imagePreview.src === "#" ? null : imagePreview.src;
-
-    // Click vào nút tùy chỉnh để kích hoạt input file
-    customButton.addEventListener('click', function () {
-        imageInput.click();
-    });
-
-    // Hiển thị ảnh được chọn
-    function displayImage(input) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                previousImageUrl = imagePreview.src;
-                imagePreview.src = e.target.result;
-                selectedFile = input.files[0]; // Lưu trữ file được chọn
-                imagePreview.style.display = 'block';
-                fileNameDisplay.textContent = input.files[0].name; // Cập nhật tên file
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // Khôi phục ảnh trước đó
-    function restorePreviousImage() {
-        if (previousImageUrl) {
-            imagePreview.src = previousImageUrl;
-            imagePreview.style.display = 'block';
-        } else {
-            imagePreview.style.display = 'none';
-        }
-        fileNameDisplay.textContent = "No file chosen"; // Khôi phục trạng thái tên file
-    }
-
-    // Xử lý khi file input thay đổi
-    imageInput.addEventListener('change', function () {
-        if (this.files.length > 0) {
-            displayImage(this);
-        } else {
-            restorePreviousImage();
-        }
-    });
-
-    // Xử lý khi người dùng nhấp vào input file
-    imageInput.addEventListener('click', function () {
-        // Đặt lại giá trị chỉ khi cần
-        setTimeout(() => {
-            this.value = ''; // Đặt lại input file về rỗng
-        }, 0); // Đảm bảo thực hiện sau khi sự kiện click hoàn thành
-    });
-</script>
-<script>
-    <!--    nếu order ko completed thì ẩn-->
-    if (orderStatus !== 'COMPLETED') {
-        document.getElementById('reviewContainer').style.display = 'none';
-    }
-    document.getElementById('productSelect').addEventListener('change', function () {
-        var productId = this.value;
-        //show neu da co danh gia
-        $.ajax({
-            type: 'GET',
-            url: '/customer/product/review',
-            contentType: 'application/json',
-            data: {
-                orderId: orderId,
-                productId: productId
-            },
-            success: function (response) {
-                //neu khac null thi show
-                if (response != null && response !== '') {
-                    document.getElementById('rating').value = response.rating;
-                    document.getElementById('review').value = response.comment;
-                    document.getElementById('imagePreview').style.display = 'block';
-                    if (response.image != null && response.image !== '') {
-                        document.getElementById('imagePreview').src = '/api/images?imageName=' + response.image;
-                    }
-                    else {
-                        document.getElementById('imagePreview').src= 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png';
-                    }
-                    updateStars(response.rating);
-                    //disable
-                    document.getElementById('rating').disabled = true;
-                    document.getElementById('review').disabled = true;
-                    document.getElementById('submitReview').disabled = true;
-                } else {
-                    document.getElementById('imagePreview').style.display = 'none';
-                    document.getElementById('rating').disabled = false;
-                    document.getElementById('review').disabled = false;
-                    document.getElementById('submitReview').disabled = false;
-                    document.getElementById('rating').value = '1';
-                    document.getElementById('review').value = '1';
-                    updateStars(0);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-
-    });
-    // Gửi ajax để lưu đánh gias
-    document.getElementById('submitReview').addEventListener('click', function () {
-        var productId = document.getElementById('productSelect').value;
-        var rating = document.getElementById('rating').value;
-        var review = document.getElementById('review').value;
-        var formData = new FormData();
-        formData.append("review", JSON.stringify({
-            orderId: orderId,
-            productId: productId,
-            rating: rating,
-            comment: review
-        }));
-        formData.append('image', selectedFile);
-        console.log("click submit review");
-        $.ajax({
-            type: 'POST',
-            enctype: 'multipart/form-data',
-            url: '/customer/product/addReview',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                showModalWithMessage(response);
-                //reload lai trang
-                // setTimeout(function () {
-                //     location.reload();
-                // }, 3000);
-            },
-            error: function (xhr, status, error) {
-                showModalWithMessage(xhr.responseText);
-            }
-        });
-    });
-    document.getElementById('starRating').addEventListener('click', function (event) {
-        if (event.target.tagName === 'I') {
-            document.getElementById('rating').value = event.target.getAttribute('data-rating');
-        }
-    });
-    const starRating = document.getElementById('starRating');
-    const stars = starRating.getElementsByClassName('fa-star');
-    const ratingInput = document.getElementById('rating');
-
-    starRating.addEventListener('click', function (e) {
-        if (e.target.classList.contains('fa-star')) {
-            const rating = e.target.getAttribute('data-rating');
-            ratingInput.value = rating;
-            updateStars(rating);
-        }
-    });
-
-    starRating.addEventListener('mouseover', function (e) {
-        if (e.target.classList.contains('fa-star')) {
-            const rating = e.target.getAttribute('data-rating');
-            updateStars(rating);
-        }
-    });
-
-    starRating.addEventListener('mouseout', function () {
-        updateStars(ratingInput.value);
-    });
-
-    function updateStars(rating) {
-        for (let i = 0; i < stars.length; i++) {
-            stars[i].classList.toggle('active', i < rating);
-        }
-    }
-</script>
-
-<!--  ajax-->
-<script src="/assets/js/jquery-3.6.0.min.js"></script>
-
-<script>
-    function cancelOrder() {
-        if (confirm("Are you sure you want to cancel this order?")) {
-            console.log("Order cancelled.");
-            // Code to cancel the order goes here
-            $.ajax({
-                type: "POST",
-                url: "/customer/order/cancel",
-                data: {
-                    orderId: orderId
-                },
-                success: function (response) {
-                    showModalWithMessage(response);
-                    window.location.href = "/customer/order/order-history";
-                },
-                error: function (xhr, status, error) {
-                    // alert(xhr.responseText);
-                    showModalWithMessage(xhr.responseText);
-
-                }
-            });
-        } else {
-            console.log("Order not cancelled.");
-        }
-    }
-
-
-    function pay(){
-        const orderId = document.querySelector(
-            'button[onclick="pay()"]').getAttribute(
-            'data-order-id');
-
-        // tạo form ẩn để gửi request
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '/customer/order/reprocessPayment';
-        form.style.display = 'none';
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'orderId';
-        input.value = orderId;
-        form.appendChild(input);
-        document.body.appendChild(form);
-        console.log("submit form"+orderId);
-        form.submit();
-    }
-</script>
-
-
-<!--  ajax-->
-
-<script src="/assets/js/popper.min.js"></script>
-<script src="/assets/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -26,13 +26,13 @@
         <div class="row">
             <div class="col-lg-3">
                 <div class="myaccount-tab-menu nav">
-                    <a href="#info-edit" onclick="toggleTab(event, 'info-edit')" class="active">
+                    <a href="#info-edit" class="tab-link">
                         <i class="fa fa-user"></i> Thông tin cá nhân
                     </a>
-                    <a href="#address-edit" onclick="toggleTab(event, 'address-edit')">
+                    <a href="#address-edit" class="tab-link">
                         <i class="fa fa-map-marker"></i> Địa chỉ
                     </a>
-                    <a href="#change-password" onclick="toggleTab(event, 'change-password')">
+                    <a href="#change-password" class="tab-link">
                         <i class="fa fa-lock"></i> Đổi mật khẩu
                     </a>
                 </div>
@@ -94,10 +94,10 @@
                                     <span th:text="${address.address} + ', ' + ${address.ward} + ', ' + ${address.district} + ', ' + ${address.province}"></span>
                                 </p>
                                 <a th:href="@{/customer/personal-info/address/edit/{id}(id=${address.addressId})}" class="btn btn-primary">Chỉnh sửa</a>
-                                <button th:onclick="'confirmDelete(' + ${address.addressId} + ')'" class="btn btn-delete">Xóa</button>
+                                <button th:data-address-id="${address.addressId}" class="btn btn-delete">Xóa</button>
                             </div>
                         </div>
-                        <button th:onclick="'window.location.href=\'/customer/personal-info/address/new\''" class="btn btn-success mt-3">Thêm địa chỉ mới</button>
+                        <button class="btn btn-success mt-3 add-address-btn">Thêm địa chỉ mới</button>
                     </div>
 
                     <div id="change-password" class="tab-pane">

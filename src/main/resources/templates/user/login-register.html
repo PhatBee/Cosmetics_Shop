@@ -23,6 +23,10 @@
             <p th:text="${messageLogin}"></p>
         </div>
         <form id="loginForm" th:action="@{/login}" method="post">
+
+            <!-- CSRF token cho form đăng nhập -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
             <div class="form-group">
                 <label for="username">Tên người dùng:</label>
                 <input type="text" class="form-control" id="username" name="username" required>
@@ -47,6 +51,10 @@
     <div class="form-section">
         <h2>Đăng Ký</h2>
         <form id="registerForm" method="post" action="/auth/register">
+
+            <!-- CSRF token cho form đăng ký - QUAN TRỌNG ĐỂ KHẮC PHỤC LỖ HỔNG -->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
             <div class="form-group">
                 <label for="regFullname">Fullname:</label>
                 <input type="text" class="form-control" id="regFullname" name="fullname" required>

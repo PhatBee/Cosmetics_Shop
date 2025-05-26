@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+    // Lấy CSRF token và header từ meta tags
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    // Thiết lập CSRF token cho tất cả AJAX requests
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        }
+    });
+
     // Lấy productCode từ data attribute
     const addToCartButton = document.getElementById('add-cart');
     const productCode = addToCartButton ? addToCartButton.getAttribute('data-product-code') : '';
@@ -22,7 +34,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 },
                 error: function (xhr, status, error) {
-                    alert(xhr.responseText);
+                    if (xhr.status === 403) {
+                        alert('Lỗi CSRF: Vui lòng tải lại trang và thử lại.');
+                        location.reload();
+                    } else {
+                        alert(xhr.responseText || 'Có lỗi xảy ra, vui lòng thử lại.');
+                    }
                 }
             });
         });
@@ -61,5 +78,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const rawPrice = priceElement.getAttribute('data-price');
         const formattedPrice = new Intl.NumberFormat('vi-VN').format(rawPrice);
         priceElement.innerText = formattedPrice + ' đ';
+    }
+
+    // Kiểm tra CSRF token có tồn tại không
+    if (!csrfToken || !csrfHeader) {
+        console.warn('CSRF token hoặc header không được tìm thấy. Các AJAX request có thể bị lỗi.');
     }
 });

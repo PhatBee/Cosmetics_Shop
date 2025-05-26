@@ -1,0 +1,42 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+}
+
+.wrapper {
+    padding: 20px;
+}
+
+.myaccount-page-wrapper {
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 8px;
+}
+
+.single-input-item label {
+    font-weight: bold;
+}
+
+.single-input-item input,
+.single-input-item select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.single-input-item button {
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.single-input-item button:hover {
+    background: #0056b3;
+}

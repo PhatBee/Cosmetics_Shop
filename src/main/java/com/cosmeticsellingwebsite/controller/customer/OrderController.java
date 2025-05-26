@@ -16,6 +16,7 @@ import com.cosmeticsellingwebsite.payload.response.OrderResponse;
 import com.cosmeticsellingwebsite.service.impl.*;
 import com.cosmeticsellingwebsite.service.vnpay.VNPAYService;
 import com.cosmeticsellingwebsite.util.Logger;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 // VNPAY
 //Ngân hàng: NCB
@@ -61,61 +63,71 @@ public class OrderController {
     @Autowired
     private ProductService productService;
 
+        @PostMapping("/preview-checkout")
+        public String checkout(@RequestParam(value = "cartItemIds", required = false) List<Long> cartItemIds,
+                               @RequestParam(value = "productCode", required = false) String productCode,
+                               @RequestParam(value = "quantity", required = false) Integer quantity,
+                               ModelMap model) {
 
-    @PostMapping("/preview-checkout")
-    public String checkout(@RequestParam(value = "cartItemIds", required = false) List<Long> cartItemIds,
-                           @RequestParam(value = "productCode", required = false) String productCode,
-                           @RequestParam(value = "quantity", required = false) Integer quantity,
-                           ModelMap model){
+            Logger.log("cartItemIds: " + cartItemIds);
+            List<CartItemForCheckoutDTO> cartItems;
+            Long userId = authenticationHelper.getUserId();
 
-        Logger.log("cartItemIds: " + cartItemIds);
-        //    example data
-//        List<CartItemDTO> cartItems = List.of(
-//                new CartItemDTO("Body_16", "Dầu gội thông ninh", 100000, 1, "https://static.thcdn.com/images/large/origen//productimg/1600/1600/10364465-1064965873801360.jpg"),
-//                new CartItemDTO("Body_41", "Body 02", 20000, 1, "https://static.thcdn.com/images/large/origen//productimg/1600/1600/10364465-1064965873801360.jpg"),
-//                new CartItemDTO("Body_63", "Dầu gội thông ninh2", 300000, 1, "https://via.placeholder.com/150")
-//        );
-        List<CartItemForCheckoutDTO> cartItems = null;
-        Long userId= authenticationHelper.getUserId();
-        //anh xa tung cartiemid thanh cartItemDTO
-//        List<CartItemForCheckoutDTO> cartItems =
-        if (productCode != null) {
-            Logger.log("productCode: " + productCode);
-            model.addAttribute("isSingleProduct", true);
-            Product product = productService.getProductByProductCode(productCode);
-            // tạo ra 1 list cartItemDTO chỉ gồm 1 phần tử
-            cartItems = List.of(new CartItemForCheckoutDTO(productCode, product.getProductName(), product.getCost(), quantity, product.getImage()));
-        }else {
-            //ngược lại, nếu mua nhiều sản phẩm (từ trang giỏ hàng)
-            model.addAttribute("isSingleProduct", false);
-            cartItems=cartItemIds.stream().map(cartItemId -> {
-                CartItem cartItem = cartService.getCartItemById(cartItemId);
-                CartItemForCheckoutDTO cartItemDTO = new CartItemForCheckoutDTO();
-                cartItemDTO.setProductCode(cartItem.getProduct().getProductCode());
-                cartItemDTO.setProductName(cartItem.getProduct().getProductName());
-                cartItemDTO.setCost(cartItem.getProduct().getCost());
-                cartItemDTO.setQuantity(Math.toIntExact(cartItem.getQuantity()));
-                cartItemDTO.setImage(cartItem.getProduct().getImage());
-                return cartItemDTO;
-            }).toList();
+            // Xử lý cartItems
+            if (productCode != null) {
+                Logger.log("productCode: " + productCode);
+                model.addAttribute("isSingleProduct", true);
+                Product product = productService.getProductByProductCode(productCode);
+                cartItems = List.of(new CartItemForCheckoutDTO(
+                        productCode,
+                        product.getProductName(),
+                        product.getCost(),
+                        quantity,
+                        product.getImage()
+                ));
+            } else {
+                model.addAttribute("isSingleProduct", false);
+                cartItems = cartItemIds.stream().map(cartItemId -> {
+                    CartItem cartItem = cartService.getCartItemById(cartItemId);
+                    return new CartItemForCheckoutDTO(
+                            cartItem.getProduct().getProductCode(),
+                            cartItem.getProduct().getProductName(),
+                            cartItem.getProduct().getCost(),
+                            Math.toIntExact(cartItem.getQuantity()),
+                            cartItem.getProduct().getImage()
+                    );
+                }).collect(Collectors.toList());
+            }
+
+            // Tính toán subtotal và total
+            double subtotal = cartItems.stream()
+                    .mapToDouble(item -> item.getQuantity() * item.getCost())
+                    .sum();
+            double total = subtotal; // Có thể thêm logic giảm giá nếu cần
+
+            // Lấy danh sách addresses và chuyển thành JSON
+            List<Address> addresses = userService.getAddresses(userId);
+            Logger.log(addresses);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String addressesJson;
+            try {
+                addressesJson = objectMapper.writeValueAsString(addresses);
+            } catch (Exception e) {
+                Logger.log("Error converting addresses to JSON: " + e.getMessage());
+                addressesJson = "[]"; // Giá trị mặc định nếu có lỗi
+            }
+
+            // Thêm dữ liệu vào model
+            model.addAttribute("cartItems", cartItems);
+            model.addAttribute("subtotal", subtotal);
+            model.addAttribute("total", total);
+            model.addAttribute("voucherCode", ""); // Giá trị mặc định, có thể thay đổi nếu cần
+            model.addAttribute("userId", userId);
+            model.addAttribute("addresses", addresses);
+            model.addAttribute("addressesJson", addressesJson);
+
+            return "customer/checkout";
         }
-
-        double subtotal = cartItems.stream().mapToDouble(item -> item.getQuantity() * item.getCost()) // Replace 100 with the actual price of the product
-                .sum();
-        double total = subtotal; // You can include discount logic here if needed
-        // Add calculated data to the model to be displayed in the view
-        model.addAttribute("cartItems", cartItems);
-        model.addAttribute("subtotal", subtotal);
-        model.addAttribute("total", total);
-//        model.addAttribute("voucherCode", voucherCode);
-        model.addAttribute("userId", userId);
-
-        List<Address> addresses = userService.getAddresses(userId);
-        Logger.log(addresses);
-        model.addAttribute("addresses", addresses);
-//        return "customer/checkout";
-        return "customer/checkout";
-    }
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody @Valid CreateOrderRequest createOrderRequest, HttpServletRequest request) {
         try {
