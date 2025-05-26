@@ -59,6 +59,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CookieSameSiteSupplier cookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofStrict(); // Thay đổi từ Lax sang Strict
+    }
+
+    @Bean
     public OAuth2LoginSuccessHandler oauth2LoginSuccessHandler(PasswordEncoder passwordEncoder) {
         return new OAuth2LoginSuccessHandler(passwordEncoder);
     }
@@ -88,9 +93,6 @@ public class SecurityConfig {
     // Configures the security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        // CSRF Token Request Handler
-        CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
-        requestHandler.setCsrfRequestAttributeName("_csrf");
 
         return httpSecurity
                 .sessionManagement(session -> session
@@ -102,7 +104,6 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                                 // Sử dụng CookieCsrfTokenRepository để token có thể đọc được từ JavaScript
                                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                .csrfTokenRequestHandler(requestHandler)
                                 // CHỈ ignore các endpoint này
                                 .ignoringRequestMatchers(
                                         "/api/images/**",           // Image serving endpoints
@@ -113,9 +114,6 @@ public class SecurityConfig {
                                 )
                         // TẤT CẢ endpoints khác (bao gồm /customer/**) sẽ CÓ CSRF protection
                 )
-                // Sau đó sử dụng trong securityFilterChain (Spring Security 6.1+):
-                // Cấu hình Security Headers cải tiến
-                // Cấu hình Security Headers cải tiến (Spring Security 6.1+)
                 .headers(headers -> headers
                         // Frame Options
                         .frameOptions(frameOptions -> frameOptions.deny())

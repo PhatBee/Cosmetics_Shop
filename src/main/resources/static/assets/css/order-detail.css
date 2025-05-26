@@ -1,0 +1,123 @@
+
+    /* ... Other styles ... */
+
+.history-timeline {
+    display: flex;                 /* Arrange items horizontally */
+    overflow-x: auto;             /* Enable horizontal scrolling if needed */
+    padding-bottom: 20px;          /* Add space for step connector*/
+}
+
+
+.history-item {
+    position: relative;
+    flex: 0 0 auto;          /* Prevent items from shrinking */
+    width: 150px;            /* Adjust width as needed */
+    margin-right: 30px;      /* Add spacing between items */
+    text-align: center;      /* Center text within each item */
+
+}
+
+.history-step {
+    width: 30px;              /* Adjust size as needed */
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e2e8f0; /* Light gray background */
+    color: #4a5568; /* Dark gray text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;     /* Center and add bottom margin */
+
+}
+
+.step-number {
+    font-weight: bold;
+}
+
+.history-details { /* Style the details below the circle */
+    margin-top: 10px; /* Space between the circle and the details */
+}
+.status {
+    font-weight: 600;       /* Semibold or bold font-weight */
+    margin-bottom: 5px;    /* Space between status and description*/
+}
+
+
+.description, .timestamp {
+    font-size: 0.9em; /* Slightly smaller font size for these elements */
+    color: #718096; /* Gray color */
+
+}
+
+.timestamp {
+    display: block; /* Place timestamp on its own line */
+}
+
+/* Styles for the connector lines between the steps (optional) */
+
+/* This part is more complex and depends on your layout requirements.
+ If the steps should always be connected by a single line, you can achieve
+ this with ::before pseudo-elements and positioning.
+ If the number of steps is dynamic and the timeline scrolls, you will probably
+ need JavaScript to calculate the connector lengths dynamically. */
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.block {
+    display: block;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.border {
+    border: 1px solid #d1d5db;
+}
+
+.rounded {
+    border-radius: 0.25rem;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+select, textarea {
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+button {
+    background-color: #3b82f6;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2563eb;
+}
+
+.star-rating {
+    font-size: 1.5rem;
+    color: #d1d5db;
+    cursor: pointer;
+}
+
+.star-rating .fa-star.active {
+    color: #fbbf24;
+}
