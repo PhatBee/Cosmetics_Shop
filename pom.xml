@@ -182,6 +182,11 @@
             <version>2.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

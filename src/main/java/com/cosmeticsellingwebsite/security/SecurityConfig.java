@@ -34,6 +34,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 
 import java.util.Arrays;
 
@@ -75,6 +77,25 @@ public class SecurityConfig {
         return CookieSameSiteSupplier.ofStrict(); // Thay đổi từ Lax sang Strict
     }
 
+    @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setUseHttpOnlyCookie(true);           // ⚠️ Bắt buộc để sửa lỗi ZAP
+        serializer.setUseSecureCookie(true);             // ⚠️ Bắt buộc nếu dùng HTTPS
+        serializer.setSameSite("Strict");                // 🔒 Tăng bảo mật CSRF
+        return serializer;
+    }
+
+    @Bean
+    public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
+        CookieCsrfTokenRepository repo = new CookieCsrfTokenRepository();
+        repo.setCookieHttpOnly(true);     // ✅ fix ZAP
+        repo.setCookiePath("/");
+        repo.setCookieName("XSRF-TOKEN");
+        return repo;
+    }
+
+
 
     @Bean
         public CorsConfigurationSource corsConfigurationSource() {
@@ -88,6 +109,8 @@ public class SecurityConfig {
             return source;
         }
 
+
+
     // Configures the security filter chain
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -100,7 +123,8 @@ public class SecurityConfig {
 //                .csrf(csrf -> csrf.disable()) // Disable CSRF protection
 
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRepository(cookieCsrfTokenRepository())  // dùng bean custom
+
                         .ignoringRequestMatchers(
                                 "/api/**",
                                 "/oauth2/**",
@@ -165,6 +189,13 @@ public class SecurityConfig {
                         .successHandler(customAuthenticationSuccessHandler)
 //                        .failureUrl("/auth/login-failure")
                                 .failureHandler(new CustomAuthenticationFailureHandler())
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // URL để gọi logout
+                        .logoutSuccessUrl("/auth/login?logout") // Chuyển hướng sau khi logout thành công
+                        .invalidateHttpSession(true) // Hủy session
+                        .deleteCookies("JSESSIONID", "remember-me") // Xóa cookie session và remember-me
+                        .permitAll() // Cho phép tất cả truy cập endpoint logout
                 )
                 .rememberMe(remember -> remember
                         .key("yourSecretRememberMeKey") // Replace with a strong, unique key

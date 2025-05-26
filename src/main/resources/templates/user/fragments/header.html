@@ -40,7 +40,12 @@
                     </div>
                     <li class="btn btn-success" th:if="${#authorization.expression('isAuthenticated()')}"><a class="dropdown-item" id="profileItem" href="/customer/personal-info">Profile</a></li>
                     <li class="btn btn-custom" th:if="${#authorization.expression('isAuthenticated()')}"><a class="dropdown-item" id="manageProductItem" href="/customer/order/order-history">Orders</a>                                    </li>
-                    <li class="btn btn-danger" th:if="${#authorization.expression('isAuthenticated()')}"><a class="dropdown-item" href="/logout" id="logout">Logout</a></li>
+                    <li class="btn btn-danger" th:if="${#authorization.expression('isAuthenticated()')}">
+                        <form action="/logout" method="post" id="logoutForm">
+                            <input type="hidden" name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                            <a class="dropdown-item" href="#" id="logout">Logout</a>
+                        </form>
+                    </li>
                     <li class="btn btn-success" th:if="${#authorization.expression('!isAuthenticated()')}"><a class="dropdown-item" id="loginItem" href="/auth/login">Login</a></li>
                     <li class="btn btn-danger" th:if="${#authorization.expression('!isAuthenticated()')}"><a class="dropdown-item" id="registerItem" href="/auth/register">Register</a></li>
 
