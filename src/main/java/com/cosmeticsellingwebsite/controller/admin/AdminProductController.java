@@ -9,6 +9,8 @@ import com.cosmeticsellingwebsite.service.impl.ProductService;
 import com.cosmeticsellingwebsite.service.interfaces.ICategoryService;
 import com.cosmeticsellingwebsite.service.interfaces.IProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +41,8 @@ public class AdminProductController {
 
     @GetMapping("")
     public String getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "5") int size,
+                                 @RequestParam(defaultValue = "5")
+                                 @Min(value = 1, message = "Page size must be at least 1") @Max(value = 10, message = "Page size must be at most 10") int size,
                                  @RequestParam(defaultValue = "") String searchKeyword,
                                  @RequestParam(required = false) Boolean active,
                                  Model model) {

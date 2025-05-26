@@ -2,6 +2,7 @@ package com.cosmeticsellingwebsite.controller.customer;
 
 import com.cosmeticsellingwebsite.config.AuthenticationHelper;
 import com.cosmeticsellingwebsite.dto.AddressForOrderDTO;
+import com.cosmeticsellingwebsite.exception.CustomException;
 import com.cosmeticsellingwebsite.service.impl.AddressService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,12 @@ public class AddressController {
     // Trang chỉnh sửa địa chỉ
     @GetMapping("/edit/{addressId}")
     public String editAddress(@PathVariable Long addressId, Model model) {
-        AddressForOrderDTO address = addressService.getAddressById(addressId);
+        Long currentUserId = authenticationHelper.getUserId();
+
+        // Giả sử có phương thức mới trong AddressService
+        AddressForOrderDTO address = addressService.getAddressByIdAndUserId(addressId, currentUserId);
         if (address == null) {
-            return "redirect:/customer/personal-info/address?error=not-found";
+             return "err/403"; // Hoặc thông báo lỗi phù hợp
         }
         model.addAttribute("address", address);
         return "customer/edit-address"; // Giao diện sửa địa chỉ

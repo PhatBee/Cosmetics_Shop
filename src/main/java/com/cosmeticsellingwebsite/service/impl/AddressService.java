@@ -4,6 +4,7 @@ import com.cosmeticsellingwebsite.dto.AddressForOrderDTO;
 import com.cosmeticsellingwebsite.entity.Address;
 import com.cosmeticsellingwebsite.entity.Customer;
 import com.cosmeticsellingwebsite.entity.User;
+import com.cosmeticsellingwebsite.exception.EntityNotFoundException;
 import com.cosmeticsellingwebsite.repository.AddressRepository;
 import com.cosmeticsellingwebsite.repository.UserRepository;
 import com.cosmeticsellingwebsite.service.interfaces.IAddressService;
@@ -83,14 +84,24 @@ public class AddressService implements IAddressService {
     public boolean saveAddressForUser(AddressForOrderDTO addressDTO, Long userId) {
         try {
             Optional<User> userOpt = userRepository.findById(userId);
-            if (!userOpt.isPresent()) {
-                return false;
+            if (!userOpt.isPresent()) {                return false;            }
+            Address address;
+            if (addressDTO.getAddressId() != null) {
+                // Đây là trường hợp cập nhật
+                address = addressRepository.findById(addressDTO.getAddressId())
+                        .orElseThrow(() -> new EntityNotFoundException("Address with ID " + addressDTO.getAddressId() + " not found."));
+
+                // KIỂM TRA QUYỀN SỞ HỮU CHẶT CHẼ
+                if (!address.getCustomer().getUserId().equals(userId)) {
+                    // Log hành vi đáng ngờ hoặc ném ngoại lệ bảo mật
+                    // System.err.println("Attempt to update address of another user. User: " + userId + ", Address Owner: " + address.getCustomer().getUserId());
+                    throw new SecurityException("User does not have permission to update this address.");
+                }
+            } else {
+                // Đây là trường hợp tạo mới
+                address = new Address();
+                address.setCustomer((Customer) userOpt.get()); // Gán customer cho địa chỉ mới
             }
-
-            Address address = addressDTO.getAddressId() != null
-                    ? addressRepository.findById(addressDTO.getAddressId()).orElse(new Address())
-                    : new Address();
-
             address.setReceiverName(addressDTO.getReceiverName());
             address.setReceiverPhone(addressDTO.getReceiverPhone());
             address.setAddress(addressDTO.getAddress());
@@ -98,7 +109,6 @@ public class AddressService implements IAddressService {
             address.setDistrict(addressDTO.getDistrict());
             address.setWard(addressDTO.getWard());
             address.setCustomer((Customer) userOpt.get());
-
             addressRepository.save(address);
             return true;
         } catch (Exception e) {
@@ -119,5 +129,25 @@ public class AddressService implements IAddressService {
             return true;
         }
         return false;
+    }
+
+    public AddressForOrderDTO getAddressByIdAndUserId(Long addressId, Long currentUserId) {
+        Optional<Address> addressOpt = addressRepository.findById(addressId);
+        if (addressOpt.isPresent()) {
+            Address address = addressOpt.get();
+            // Kiểm tra xem địa chỉ có thuộc về người dùng hiện tại không
+            if (address.getCustomer().getUserId().equals(currentUserId)) {
+                return new AddressForOrderDTO(
+                        address.getAddressId(),
+                        address.getReceiverName(),
+                        address.getReceiverPhone(),
+                        address.getAddress(),
+                        address.getProvince(),
+                        address.getDistrict(),
+                        address.getWard()
+                );
+            }
+        }
+        return null; // Hoặc ném ra ngoại lệ nếu không tìm thấy
     }
 }

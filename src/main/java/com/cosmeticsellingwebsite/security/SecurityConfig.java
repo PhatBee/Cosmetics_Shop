@@ -167,7 +167,7 @@ public class SecurityConfig {
 //                        .requestMatchers("/admin/**").hasRole("ADMIN")
 //                        .requestMatchers("/manager/**").hasRole("MANAGER")
                         //home page public
-                        .requestMatchers("/topSellingProducts","/topNewestProducts","/topHighestRatingProducts").permitAll()
+                        .requestMatchers("/topSellingProducts","/topNewestProducts","/topHighestRatingProducts","/customer/voucher/**").permitAll()
                         .requestMatchers("/api/revenue/**").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
                         .requestMatchers(
