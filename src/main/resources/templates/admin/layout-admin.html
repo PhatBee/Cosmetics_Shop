@@ -69,9 +69,20 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/logout}">
-                            <i class="fas fa-sign-out-alt me-2"></i> Logout
-                        </a>
+<!--                        <a class="nav-link" th:href="@{/logout}">-->
+<!--                            -->
+<!--                            <i class="fas fa-sign-out-alt me-2"></i> Logout-->
+<!--                        </a>-->
+                        <form action="/logout" method="post">
+                            <input type="hidden"
+                                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}"
+
+                            />
+                            <button type="submit"
+                                    class="nav-link"
+
+                            ><i class="fas fa-sign-out-alt me-2">Logout</i></button>
+                        </form>
                     </li>
                 </ul>
             </div>
