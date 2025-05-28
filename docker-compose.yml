@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    image: tuoitho/cosmetics-shop-bmw:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_URL=jdbc:mysql://db:3306/cosmeticsshop
+      - DB_USER=root
+      - DB_PASS=123456
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: cosmeticsshop
+    ports:
+      - "3399:3306"
+    command: --lower_case_table_names=1
+    volumes:
+      # Mount thư mục chứa file init.sql vào container
+      # Giả sử file init.sql của bạn nằm trong thư mục ./init-scripts/
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
